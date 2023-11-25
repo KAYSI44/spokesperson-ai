@@ -1,0 +1,12 @@
+.switch {
+  display: block;
+  cursor: pointer;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .5)) drop-shadow(0 4px 24px rgba(0, 0, 0, .4));
+  input {
+      display: none;
+  }
+  canvas {
+      display: block;
+      margin: -16px -26px;
+  }
+}

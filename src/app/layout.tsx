@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "@/styles/globals.css";
-import ThemeProvider from "@/components/wrappers/theme-provider";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import '@/styles/globals.css';
+import ThemeProvider from '@/components/wrappers/theme-provider';
+import AnalyticsProvider from '@/context/analytics-context';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "Spokesperson AI",
+  title: 'Spokesperson AI',
 };
 
 export default function RootLayout({
@@ -23,7 +24,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <AnalyticsProvider>{children}</AnalyticsProvider>
         </ThemeProvider>
       </body>
     </html>
