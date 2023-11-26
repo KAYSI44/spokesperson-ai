@@ -84,7 +84,7 @@ export default function StreamPlayer({
     if (!analyticsOnRef.current) return;
 
     const { data, status } = await axios({
-      url: `/api/analyze-face`,
+      url: `/api/analyze/face`,
       method: 'POST',
       data: {
         image: base64Data,
@@ -110,7 +110,7 @@ export default function StreamPlayer({
     if (base64Data.length === 0 || !analyticsOnRef.current) return;
 
     const { data, status } = await axios({
-      url: `/api/analyze-speech`,
+      url: `/api/tts`,
       method: 'POST',
       data: {
         audio: base64Data,
