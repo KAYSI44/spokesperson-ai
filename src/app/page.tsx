@@ -16,6 +16,7 @@ export default function Home() {
           playbackId="8QTvPdOAQZKYCxXcAy1w2CQEVUdeRTCw5dGDO53eueE"
         /> */}
         <StreamPlayer
+          analyticsIntervalMs={5000}
           className="col-start-1 col-end-2 row-span-1"
           videoId="QoBSJukQL8sTOj7ajvvvYlNF1spSbjMFtXt9AFI1Lo00"
           playbackId="7Xoqe3ndrAqgNXEx1f39RQ7Jzv02gkoRwW5K2nHlzP01U"

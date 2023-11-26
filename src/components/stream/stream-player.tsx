@@ -1,7 +1,7 @@
 'use client';
 
-import axios from 'axios';
-import { blobToBase64, cn } from '@/lib/utils';
+import axios, { type AxiosResponse } from 'axios';
+import { blobToBase64, cn, downloadFile } from '@/lib/utils';
 import MuxVideo from '@mux/mux-video-react';
 import { useEffect, useRef, useContext } from 'react';
 import { AnalyticsContext } from '@/context/analytics-context';
@@ -20,12 +20,14 @@ interface StreamPlayerProps {
   className?: string;
   videoId: string;
   playbackId: string;
+  analyticsIntervalMs: number;
 }
 
 export default function StreamPlayer({
   className,
   videoId,
   playbackId,
+  analyticsIntervalMs,
 }: StreamPlayerProps) {
   const intervalId = useRef<NodeJS.Timeout>();
   const videoRef = useRef<HTMLVideoElement>();
@@ -34,6 +36,19 @@ export default function StreamPlayer({
 
   const { analyticsOn } = useContext(AnalyticsContext);
   const analyticsOnRef = useRef(analyticsOn);
+
+  const storedAnalysisRef = useRef<
+    {
+      timestamp: number;
+      pii: PiiAnalysisOutput['result'];
+      storedFrame: SaveFrameOutput['result'];
+      toxicity: ToxicityAnalysisOutput['result'];
+      faceAnalysis: FaceAnalysisOutput['result'];
+      sentiment: SentimentAnalysisOutput['result'];
+      keyPhrases: KeyPhrasesAnalysisOutput['result'];
+      transcription: TranscribeSpeechOutput['result'];
+    }[]
+  >([]);
 
   useEffect(() => {
     analyticsOnRef.current = analyticsOn;
@@ -44,11 +59,11 @@ export default function StreamPlayer({
     if (intervalId.current !== undefined) clearInterval(intervalId.current);
 
     // Start capturing frames periodically
-    intervalId.current = setInterval(() => {
-      // captureFrame();
-      analyzeSpeech();
+    intervalId.current = setInterval(async () => {
       startAudioCapture();
-    }, 5000);
+      await new Promise((resolve) => setTimeout(resolve, analyticsIntervalMs));
+      captureFrame();
+    }, analyticsIntervalMs + 100);
 
     // Clean up the interval when the component is unmounted
     return () => {
@@ -90,7 +105,10 @@ export default function StreamPlayer({
   }
 
   async function analyzeFrame(base64Data: string) {
-    if (!analyticsOnRef.current) return;
+    const video = videoRef.current;
+
+    if (!analyticsOnRef.current || video === undefined) return;
+    const timestamp = video.currentTime;
 
     const analyzeReq = axios<FaceAnalysisOutput>({
       url: `/api/analyze/face`,
@@ -108,52 +126,43 @@ export default function StreamPlayer({
       },
     });
 
-    const [
-      { data: saveData, status: saveStatus },
-      { data: analyzeData, status: analyzeStatus },
-    ] = await Promise.all([saveReq, analyzeReq]);
-
-    if (saveStatus !== 200) {
-      throw new Error(saveData?.error?.message ?? 'An error occured');
-    }
-
-    if (analyzeStatus !== 200) {
-      throw new Error(analyzeData?.error?.message ?? 'An error occured');
-    }
+    await analyzeSpeech(timestamp, saveReq, analyzeReq);
   }
 
-  async function analyzeSpeech() {
-    if (recorderRef.current === undefined) return;
+  async function analyzeSpeech(
+    timestamp: number,
+    saveReq: Promise<AxiosResponse<SaveFrameOutput, any>>,
+    faceAnalyzeReq: Promise<AxiosResponse<FaceAnalysisOutput, any>>,
+  ) {
+    const video = videoRef.current;
+    if (recorderRef.current === undefined || video === undefined) return;
 
-    // const blob = await new Promise<Blob>(
-    //   (resolve) => recorderRef.current?.stopRecording((blob) => resolve(blob)),
-    // );
+    const blob = await new Promise<Blob>(
+      (resolve) => recorderRef.current?.stopRecording((blob) => resolve(blob)),
+    );
 
-    // const base64Data = await blobToBase64(blob);
+    const base64Data = await blobToBase64(blob);
 
-    if (/*base64Data.length === 0 ||*/ !analyticsOnRef.current) return;
+    if (base64Data.length === 0 || !analyticsOnRef.current) return;
 
-    // const transcribeReq = axios<TranscribeSpeechOutput>({
-    //   url: `/api/speech`,
-    //   method: 'POST',
-    //   data: {
-    //     audio: base64Data,
-    //   },
-    // });
+    const transcribeReq = axios<TranscribeSpeechOutput>({
+      url: `/api/speech`,
+      method: 'POST',
+      data: {
+        audio: base64Data,
+      },
+    });
 
-    // const [{ data: transcribeData, status: transcribeStatus }] =
-    //   await Promise.all([transcribeReq]);
+    const [{ data: transcribeData, status: transcribeStatus }] =
+      await Promise.all([transcribeReq]);
 
-    // const transcribedText = transcribeData?.result?.text ?? '';
+    const transcribedText = transcribeData?.result?.text ?? '';
 
-    // if (transcribeStatus != 200) {
-    //   throw new Error(transcribeData?.error?.message ?? 'An error occured');
-    // }
+    if (transcribeStatus != 200) {
+      throw new Error(transcribeData?.error?.message ?? 'An error occured');
+    }
 
-    const transcribedText =
-      'Connor, thank you very much for doing this. Can you describe the emotions after a lost?';
-
-    // After transcribing the speech, perform analysis operations
+    // After transcribing the speech, perform analysis operations, analyze image frame
     const sentimentReq = axios<SentimentAnalysisOutput>({
       url: `/api/analyze/sentiment`,
       method: 'POST',
@@ -191,25 +200,53 @@ export default function StreamPlayer({
       { data: toxicityData, status: toxicityStatus },
       { data: piiData, status: piiStatus },
       { data: keyPhrasesData, status: keyPhrasesStatus },
-    ] = await Promise.all([sentimentReq, toxicityReq, piiReq, keyPhrasesReq]);
+      { data: saveData, status: saveStatus },
+      { data: faceAnalyzeData, status: analyzeStatus },
+    ] = await Promise.all([
+      sentimentReq,
+      toxicityReq,
+      piiReq,
+      keyPhrasesReq,
+      saveReq,
+      faceAnalyzeReq,
+    ]);
 
-    if (sentimentStatus !== 200) {
+    if (saveStatus !== 200 || saveData.result === undefined) {
+      throw new Error(saveData?.error?.message ?? 'An error occured');
+    }
+
+    if (analyzeStatus !== 200 || faceAnalyzeData.result === undefined) {
+      throw new Error(faceAnalyzeData?.error?.message ?? 'An error occured');
+    }
+
+    if (sentimentStatus !== 200 || sentimentData.result === undefined) {
       throw new Error(sentimentData?.error?.message ?? 'An error occured');
     }
 
-    if (toxicityStatus !== 200) {
+    if (toxicityStatus !== 200 || toxicityData.result === undefined) {
       throw new Error(toxicityData?.error?.message ?? 'An error occured');
     }
 
-    if (piiStatus !== 200) {
+    if (piiStatus !== 200 || piiData.result === undefined) {
       throw new Error(piiData?.error?.message ?? 'An error occured');
     }
 
-    if (keyPhrasesStatus !== 200) {
+    if (keyPhrasesStatus !== 200 || keyPhrasesData.result === undefined) {
       throw new Error(keyPhrasesData?.error?.message ?? 'An error occured');
     }
 
-    console.log({ sentimentData, toxicityData, piiData, keyPhrasesData });
+    storedAnalysisRef.current.push({
+      timestamp,
+      pii: piiData.result,
+      storedFrame: saveData.result,
+      toxicity: toxicityData.result,
+      sentiment: sentimentData.result,
+      keyPhrases: keyPhrasesData.result,
+      transcription: transcribeData.result,
+      faceAnalysis: faceAnalyzeData.result,
+    });
+
+    console.log(storedAnalysisRef.current);
   }
 
   async function startAudioCapture() {

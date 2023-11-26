@@ -23,7 +23,6 @@ export async function POST(
     return NextResponse.json({ result: { sentiment } }, { status: 200 });
   } catch (error) {
     const message = `Error processing image: ${error}`;
-    console.log(error);
     return NextResponse.json({ error: { message } }, { status: 500 });
   }
 }

@@ -39,7 +39,6 @@ export async function POST(
     );
   } catch (error) {
     const message = `Error processing image: ${error}`;
-    console.log(error);
     return NextResponse.json({ error: { message } }, { status: 500 });
   }
 }
