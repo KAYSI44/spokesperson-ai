@@ -22,6 +22,7 @@ interface StreamPlayerProps {
   videoId: string;
   playbackId: string;
   analyticsIntervalMs: number;
+  isInterviewerScreen?: boolean;
 }
 
 export default function StreamPlayer({
@@ -29,6 +30,7 @@ export default function StreamPlayer({
   videoId: mockVideoId,
   playbackId: mockPlaybackId,
   analyticsIntervalMs,
+  isInterviewerScreen,
 }: StreamPlayerProps) {
   const intervalId = useRef<NodeJS.Timeout>();
   const videoRef = useRef<HTMLVideoElement>();
@@ -55,8 +57,8 @@ export default function StreamPlayer({
   }, [isMock]);
 
   useEffect(() => {
-    analyticsOnRef.current = analyticsOn;
-  }, [analyticsOn]);
+    analyticsOnRef.current = analyticsOn && isInterviewerScreen !== true;
+  }, [analyticsOn, isInterviewerScreen]);
 
   useEffect(() => {
     // Clear existing interval if needed
@@ -81,7 +83,7 @@ export default function StreamPlayer({
     const video = videoRef.current;
 
     // Ensure the video element is loaded
-    if (!video) return;
+    if (!video || !analyticsOnRef.current) return;
 
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
@@ -279,6 +281,8 @@ export default function StreamPlayer({
       className={cn(
         className,
         'w-full h-full mx-auto p-1 border border-muted rounded-lg overflow-hidden',
+        !isInterviewerScreen &&
+          'border-green-500 shadow-lg shadow-green-500/10 border-2',
       )}
     >
       <ControlPanel isMock={isMock} toggleMock={toggleMock} />
