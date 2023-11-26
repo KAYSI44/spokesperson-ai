@@ -25,6 +25,7 @@ interface MagicSwitchProps {
 }
 
 export default function MagicSwitch({ toggled, onToggle }: MagicSwitchProps) {
+  const containerRef = useRef<HTMLElement>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const sphereRef =
@@ -34,6 +35,8 @@ export default function MagicSwitch({ toggled, onToggle }: MagicSwitchProps) {
   const sceneRef = useRef<Scene>();
   const mouseXRef = useRef<number>(0);
   const mouseYRef = useRef<number>(0);
+
+  const tweenBackRef = useRef<gsap.core.Tween>();
 
   const dotColor = '#AAAAB7';
   const activeColor = '#36363C';
@@ -245,6 +248,11 @@ export default function MagicSwitch({ toggled, onToggle }: MagicSwitchProps) {
     scene.add(new AmbientLight(0x626267));
 
     const handlePointerMove = (e: PointerEvent) => {
+      if (tweenBackRef.current) {
+        tweenBackRef.current.kill();
+        tweenBackRef.current = undefined;
+      }
+
       if (e.target === null) return;
       const target = e.target as HTMLElement;
 
@@ -270,6 +278,20 @@ export default function MagicSwitch({ toggled, onToggle }: MagicSwitchProps) {
     };
 
     const handlePointerLeave = () => {
+      const interpX = gsap.utils.interpolate(mouseXRef.current, 0);
+      const interpY = gsap.utils.interpolate(mouseYRef.current, 0);
+
+      tweenBackRef.current = gsap.to(
+        {},
+        {
+          duration: 1,
+          onUpdate() {
+            mouseXRef.current = Math.round(interpX(this.ratio));
+            mouseYRef.current = Math.round(interpY(this.ratio));
+          },
+        },
+      );
+
       camera.position.x = 0;
       camera.position.y = 0;
       renderer.render(scene, camera);
@@ -290,16 +312,19 @@ export default function MagicSwitch({ toggled, onToggle }: MagicSwitchProps) {
       handlePointer(e, 0);
     };
 
-    canvas.addEventListener('pointermove', handlePointerMove, false);
-    canvas.addEventListener('pointerleave', handlePointerLeave, false);
-    canvas.addEventListener('pointerdown', handlePointerDown, false);
-    canvas.addEventListener('pointerup', handlePointerUp, false);
+    const container = containerRef.current;
+    if (!container) return;
+
+    container.addEventListener('pointermove', handlePointerMove, false);
+    container.addEventListener('pointerleave', handlePointerLeave, false);
+    container.addEventListener('pointerdown', handlePointerDown, false);
+    container.addEventListener('pointerup', handlePointerUp, false);
 
     return () => {
-      canvas.removeEventListener('pointermove', handlePointerMove);
-      canvas.removeEventListener('pointerleave', handlePointerLeave);
-      canvas.removeEventListener('pointerdown', handlePointerDown);
-      canvas.removeEventListener('pointerup', handlePointerUp);
+      container.removeEventListener('pointermove', handlePointerMove);
+      container.removeEventListener('pointerleave', handlePointerLeave);
+      container.removeEventListener('pointerdown', handlePointerDown);
+      container.removeEventListener('pointerup', handlePointerUp);
     };
   }, []);
 
@@ -310,7 +335,10 @@ export default function MagicSwitch({ toggled, onToggle }: MagicSwitchProps) {
   }, []);
 
   return (
-    <label className={styles['switch']}>
+    <label
+      className={styles['switch']}
+      ref={(el) => (containerRef.current = el as HTMLElement)}
+    >
       <input
         type="checkbox"
         checked={toggled}
