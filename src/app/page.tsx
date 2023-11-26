@@ -1,11 +1,12 @@
 import AnalyticsToggle from '@/components/configure/analytics-toggle';
+import AnalysisEvents from '@/components/events/analysis-events';
 import MagicButton from '@/components/interact/magic-button';
 import StreamPlayer from '@/components/stream/stream-player';
 
 export default function Home() {
   return (
     <main>
-      <div className="mb-2 mt-8 flex items-center justify-center gap-4">
+      <div className="mb-8 mt-8 flex items-center justify-center gap-4">
         {/* <MagicButton dotsAmount={10}>Start Interview</MagicButton> */}
         <AnalyticsToggle />
       </div>
@@ -21,6 +22,7 @@ export default function Home() {
           videoId="QoBSJukQL8sTOj7ajvvvYlNF1spSbjMFtXt9AFI1Lo00"
           playbackId="7Xoqe3ndrAqgNXEx1f39RQ7Jzv02gkoRwW5K2nHlzP01U"
         />
+        <AnalysisEvents />
       </div>
     </main>
   );

@@ -274,7 +274,7 @@ export default function StreamPlayer({
     <div
       className={cn(
         className,
-        'w-full h-full mx-auto mt-8 p-1 border border-muted rounded-lg overflow-hidden',
+        'w-full h-full mx-auto p-1 border border-muted rounded-lg overflow-hidden',
       )}
     >
       <MuxVideo

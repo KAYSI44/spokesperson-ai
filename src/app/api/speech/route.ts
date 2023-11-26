@@ -24,6 +24,8 @@ interface TranscriptionResult {
   };
 }
 
+const POLL_MILLISECONDS = 1200;
+
 export async function POST(
   request: NextRequest,
 ): Promise<NextResponse<TranscribeSpeechOutput>> {
@@ -93,7 +95,7 @@ export async function POST(
             );
           } else {
             // If not completed, wait and poll again
-            setTimeout(() => runJob(jobName), 5000); // Poll every 5 seconds
+            setTimeout(() => runJob(jobName), POLL_MILLISECONDS); // Poll every few seconds
           }
         }
 
