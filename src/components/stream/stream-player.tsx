@@ -3,7 +3,7 @@
 import axios, { type AxiosResponse } from 'axios';
 import { blobToBase64, cn, downloadFile } from '@/lib/utils';
 import MuxVideo from '@mux/mux-video-react';
-import { useEffect, useRef, useContext } from 'react';
+import { useEffect, useRef, useContext, useState } from 'react';
 import { AnalyticsContext } from '@/context/analytics-context';
 import { RecordRTCPromisesHandler } from '@/third-party/RecordRTC';
 import {
@@ -15,6 +15,7 @@ import {
   ToxicityAnalysisOutput,
   TranscribeSpeechOutput,
 } from '@/lib/dto';
+import ControlPanel from './control-panel';
 
 interface StreamPlayerProps {
   className?: string;
@@ -25,8 +26,8 @@ interface StreamPlayerProps {
 
 export default function StreamPlayer({
   className,
-  videoId,
-  playbackId,
+  videoId: mockVideoId,
+  playbackId: mockPlaybackId,
   analyticsIntervalMs,
 }: StreamPlayerProps) {
   const intervalId = useRef<NodeJS.Timeout>();
@@ -36,6 +37,22 @@ export default function StreamPlayer({
 
   const { analyticsOn, addAnalysisEvent } = useContext(AnalyticsContext);
   const analyticsOnRef = useRef(analyticsOn);
+
+  const [isMock, toggleMock] = useState(false);
+
+  const [playbackId, setPlaybackId] = useState<string>();
+  const [videoId, setVideoId] = useState<string>();
+
+  useEffect(() => {
+    if (isMock) {
+      setPlaybackId(mockPlaybackId);
+      setVideoId(mockVideoId);
+    } else {
+      setPlaybackId(undefined);
+      setVideoId(undefined);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMock]);
 
   useEffect(() => {
     analyticsOnRef.current = analyticsOn;
@@ -243,6 +260,8 @@ export default function StreamPlayer({
     const videoStream = (video as unknown as HTMLCanvasElement).captureStream();
     const audioTrack = videoStream.getAudioTracks()[0];
 
+    if (!audioTrack) return;
+
     const audioStream = new MediaStream();
     audioStream.addTrack(audioTrack);
 
@@ -262,6 +281,7 @@ export default function StreamPlayer({
         'w-full h-full mx-auto p-1 border border-muted rounded-lg overflow-hidden',
       )}
     >
+      <ControlPanel isMock={isMock} toggleMock={toggleMock} />
       <MuxVideo
         ref={videoRef}
         className="w-full h-full"

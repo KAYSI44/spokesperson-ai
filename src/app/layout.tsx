@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import ThemeProvider from '@/components/wrappers/theme-provider';
 import AnalyticsProvider from '@/context/analytics-context';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,7 +25,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AnalyticsProvider>{children}</AnalyticsProvider>
+          <TooltipProvider>
+            <AnalyticsProvider>{children}</AnalyticsProvider>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>
