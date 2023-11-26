@@ -6,6 +6,15 @@ import MuxVideo from '@mux/mux-video-react';
 import { useEffect, useRef, useContext } from 'react';
 import { AnalyticsContext } from '@/context/analytics-context';
 import { RecordRTCPromisesHandler } from '@/third-party/RecordRTC';
+import {
+  FaceAnalysisOutput,
+  KeyPhrasesAnalysisOutput,
+  PiiAnalysisOutput,
+  SaveFrameOutput,
+  SentimentAnalysisOutput,
+  ToxicityAnalysisOutput,
+  TranscribeSpeechOutput,
+} from '@/lib/dto';
 
 interface StreamPlayerProps {
   className?: string;
@@ -83,7 +92,7 @@ export default function StreamPlayer({
   async function analyzeFrame(base64Data: string) {
     if (!analyticsOnRef.current) return;
 
-    const { data, status } = await axios({
+    const analyzeReq = axios<FaceAnalysisOutput>({
       url: `/api/analyze/face`,
       method: 'POST',
       data: {
@@ -91,38 +100,116 @@ export default function StreamPlayer({
       },
     });
 
-    if (status != 200) {
-      throw new Error(data?.error?.message ?? 'An error occured');
+    const saveReq = axios<SaveFrameOutput>({
+      url: `/api/analyze/face`,
+      method: 'POST',
+      data: {
+        image: base64Data,
+      },
+    });
+
+    const [
+      { data: saveData, status: saveStatus },
+      { data: analyzeData, status: analyzeStatus },
+    ] = await Promise.all([saveReq, analyzeReq]);
+
+    if (saveStatus !== 200) {
+      throw new Error(saveData?.error?.message ?? 'An error occured');
     }
 
-    console.log(data);
+    if (analyzeStatus !== 200) {
+      throw new Error(analyzeData?.error?.message ?? 'An error occured');
+    }
   }
 
   async function analyzeSpeech() {
     if (recorderRef.current === undefined) return;
 
-    const blob = await new Promise<Blob>(
-      (resolve) => recorderRef.current?.stopRecording((blob) => resolve(blob)),
-    );
+    // const blob = await new Promise<Blob>(
+    //   (resolve) => recorderRef.current?.stopRecording((blob) => resolve(blob)),
+    // );
 
-    const base64Data = await blobToBase64(blob);
+    // const base64Data = await blobToBase64(blob);
 
-    if (base64Data.length === 0 || !analyticsOnRef.current) return;
+    if (/*base64Data.length === 0 ||*/ !analyticsOnRef.current) return;
 
-    const { data, status } = await axios({
-      url: `/api/tts`,
+    // const transcribeReq = axios<TranscribeSpeechOutput>({
+    //   url: `/api/speech`,
+    //   method: 'POST',
+    //   data: {
+    //     audio: base64Data,
+    //   },
+    // });
+
+    // const [{ data: transcribeData, status: transcribeStatus }] =
+    //   await Promise.all([transcribeReq]);
+
+    // const transcribedText = transcribeData?.result?.text ?? '';
+
+    // if (transcribeStatus != 200) {
+    //   throw new Error(transcribeData?.error?.message ?? 'An error occured');
+    // }
+
+    const transcribedText =
+      'Connor, thank you very much for doing this. Can you describe the emotions after a lost?';
+
+    // After transcribing the speech, perform analysis operations
+    const sentimentReq = axios<SentimentAnalysisOutput>({
+      url: `/api/analyze/sentiment`,
       method: 'POST',
       data: {
-        audio: base64Data,
+        text: transcribedText,
       },
     });
 
-    const transcribedText = data?.result?.text ?? '';
-    console.log({ transcribedText });
+    const toxicityReq = axios<ToxicityAnalysisOutput>({
+      url: `/api/analyze/toxic`,
+      method: 'POST',
+      data: {
+        text: transcribedText,
+      },
+    });
 
-    if (status != 200) {
-      throw new Error(data?.error?.message ?? 'An error occured');
+    const piiReq = axios<PiiAnalysisOutput>({
+      url: `/api/analyze/pii`,
+      method: 'POST',
+      data: {
+        text: transcribedText,
+      },
+    });
+
+    const keyPhrasesReq = axios<KeyPhrasesAnalysisOutput>({
+      url: `/api/analyze/key-phrases`,
+      method: 'POST',
+      data: {
+        text: transcribedText,
+      },
+    });
+
+    const [
+      { data: sentimentData, status: sentimentStatus },
+      { data: toxicityData, status: toxicityStatus },
+      { data: piiData, status: piiStatus },
+      { data: keyPhrasesData, status: keyPhrasesStatus },
+    ] = await Promise.all([sentimentReq, toxicityReq, piiReq, keyPhrasesReq]);
+
+    if (sentimentStatus !== 200) {
+      throw new Error(sentimentData?.error?.message ?? 'An error occured');
     }
+
+    if (toxicityStatus !== 200) {
+      throw new Error(toxicityData?.error?.message ?? 'An error occured');
+    }
+
+    if (piiStatus !== 200) {
+      throw new Error(piiData?.error?.message ?? 'An error occured');
+    }
+
+    if (keyPhrasesStatus !== 200) {
+      throw new Error(keyPhrasesData?.error?.message ?? 'An error occured');
+    }
+
+    console.log({ sentimentData, toxicityData, piiData, keyPhrasesData });
   }
 
   async function startAudioCapture() {

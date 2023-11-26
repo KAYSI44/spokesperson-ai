@@ -3,8 +3,11 @@ import {
   Comprehend,
   DetectToxicContentCommand,
 } from '@aws-sdk/client-comprehend';
+import { ToxicityAnalysisOutput } from '@/lib/dto';
 
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest,
+): Promise<NextResponse<ToxicityAnalysisOutput>> {
   try {
     const { text }: { text: string } = await request.json();
 
@@ -21,10 +24,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         result:
-          ResultList?.map((x) => {
-            const value = x.Labels?.map((l) => l.Name);
+          (ResultList?.map((x) => {
+            const value = x.Labels?.map((l) => l.Name).filter(
+              (l) => l !== undefined,
+            );
             return { toxicity: x.Toxicity, value };
-          }) ?? [],
+          }).filter(
+            (x) =>
+              (x !== undefined && x.toxicity !== undefined) ||
+              x.value !== undefined,
+          ) as ToxicityAnalysisOutput['result']) ?? [],
       },
       { status: 200 },
     );

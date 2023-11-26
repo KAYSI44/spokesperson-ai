@@ -3,8 +3,11 @@ import {
   Comprehend,
   DetectKeyPhrasesCommand,
 } from '@aws-sdk/client-comprehend';
+import { KeyPhrasesAnalysisOutput } from '@/lib/dto';
 
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest,
+): Promise<NextResponse<KeyPhrasesAnalysisOutput>> {
   try {
     const { text }: { text: string } = await request.json();
 
@@ -19,7 +22,14 @@ export async function POST(request: NextRequest) {
     );
 
     return NextResponse.json(
-      { result: KeyPhrases?.map((x) => x.Text) ?? [] },
+      {
+        result: {
+          keyPhrases:
+            (KeyPhrases?.map((x) => x.Text).filter(
+              (x) => x !== undefined,
+            ) as string[]) ?? [],
+        },
+      },
       { status: 200 },
     );
   } catch (error) {

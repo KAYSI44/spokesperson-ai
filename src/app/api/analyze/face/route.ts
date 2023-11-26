@@ -1,7 +1,10 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { DetectFacesCommand, Rekognition } from '@aws-sdk/client-rekognition';
+import { FaceAnalysisOutput } from '@/lib/dto';
 
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest,
+): Promise<NextResponse<FaceAnalysisOutput>> {
   try {
     const { image: base64 }: { image: string } = await request.json();
 

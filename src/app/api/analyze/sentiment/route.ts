@@ -1,7 +1,10 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { Comprehend, DetectSentimentCommand } from '@aws-sdk/client-comprehend';
+import { SentimentAnalysisOutput } from '@/lib/dto';
 
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest,
+): Promise<NextResponse<SentimentAnalysisOutput>> {
   try {
     const { text }: { text: string } = await request.json();
 
@@ -11,11 +14,13 @@ export async function POST(request: NextRequest) {
       Text: text,
     });
 
-    const { Sentiment } = await comprehend.detectSentiment(
+    const { Sentiment: sentiment } = await comprehend.detectSentiment(
       detectSentimentCommand.input,
     );
 
-    return NextResponse.json({ result: Sentiment }, { status: 200 });
+    if (!sentiment) throw new Error('Failed to analyze sentiment');
+
+    return NextResponse.json({ result: { sentiment } }, { status: 200 });
   } catch (error) {
     const message = `Error processing image: ${error}`;
     console.log(error);

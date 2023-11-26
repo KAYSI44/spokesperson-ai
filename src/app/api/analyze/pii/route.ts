@@ -3,8 +3,11 @@ import {
   Comprehend,
   DetectPiiEntitiesCommand,
 } from '@aws-sdk/client-comprehend';
+import { PiiAnalysisOutput } from '@/lib/dto';
 
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest,
+): Promise<NextResponse<PiiAnalysisOutput>> {
   try {
     const { text }: { text: string } = await request.json();
 
@@ -21,10 +24,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         result:
-          Entities?.map((x) => {
+          (Entities?.map((x) => {
             const value = text.slice(x.BeginOffset, x.EndOffset);
             return { type: x.Type, value };
-          }) ?? [],
+          }).filter(
+            (x) => x.type !== undefined,
+          ) as PiiAnalysisOutput['result']) ?? [],
       },
       { status: 200 },
     );

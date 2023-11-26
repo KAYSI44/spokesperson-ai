@@ -12,6 +12,7 @@ import {
   type Transcript,
 } from '@aws-sdk/client-transcribe';
 import axios from 'axios';
+import { TranscribeSpeechOutput } from '@/lib/dto';
 
 interface TranscriptionResult {
   jobName: string;
@@ -23,7 +24,9 @@ interface TranscriptionResult {
   };
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest,
+): Promise<NextResponse<TranscribeSpeechOutput>> {
   try {
     const { audio: base64 }: { audio: string } = await request.json();
 
