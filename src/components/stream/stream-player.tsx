@@ -34,21 +34,8 @@ export default function StreamPlayer({
 
   const recorderRef = useRef<RecordRTCPromisesHandler>();
 
-  const { analyticsOn } = useContext(AnalyticsContext);
+  const { analyticsOn, addAnalysisEvent } = useContext(AnalyticsContext);
   const analyticsOnRef = useRef(analyticsOn);
-
-  const storedAnalysisRef = useRef<
-    {
-      timestamp: number;
-      pii: PiiAnalysisOutput['result'];
-      storedFrame: SaveFrameOutput['result'];
-      toxicity: ToxicityAnalysisOutput['result'];
-      faceAnalysis: FaceAnalysisOutput['result'];
-      sentiment: SentimentAnalysisOutput['result'];
-      keyPhrases: KeyPhrasesAnalysisOutput['result'];
-      transcription: TranscribeSpeechOutput['result'];
-    }[]
-  >([]);
 
   useEffect(() => {
     analyticsOnRef.current = analyticsOn;
@@ -235,7 +222,7 @@ export default function StreamPlayer({
       throw new Error(keyPhrasesData?.error?.message ?? 'An error occured');
     }
 
-    storedAnalysisRef.current.push({
+    addAnalysisEvent({
       timestamp,
       pii: piiData.result,
       storedFrame: saveData.result,
@@ -245,8 +232,6 @@ export default function StreamPlayer({
       transcription: transcribeData.result,
       faceAnalysis: faceAnalyzeData.result,
     });
-
-    console.log(storedAnalysisRef.current);
   }
 
   async function startAudioCapture() {

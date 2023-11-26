@@ -1,24 +1,28 @@
-'use client'
+'use client';
 
-import { loremIpsum } from 'lorem-ipsum';
-import { useRef } from 'react';
+import { useRef, useContext, useEffect } from 'react';
 import EventHub, { AddFunction } from './event-hub';
+import { AnalyticsContext } from '@/context/analytics-context';
 
 export default function AnalysisEvents() {
   const ref = useRef<null | AddFunction>(null);
+  const { analysisEvents } = useContext(AnalyticsContext);
 
-  const handleClick = () => {
-    ref.current?.(loremIpsum());
-  };
+  useEffect(() => {
+    if (analysisEvents.length >= 1) {
+      const e = analysisEvents[0];
+      const eventMessage = `
+Transcription: ${e.transcription?.text.slice(0, 20) + '...' ?? 'NULL'}\n
+Sentiment: ${e.sentiment?.sentiment ?? 'NULL'}\n`;
+      ref.current?.(eventMessage);
+    }
+  }, [analysisEvents]);
 
   return (
-    <div onClick={handleClick} className="cursor-pointer text-[#676767] select-none flex items-center justify-center bg-muted rounded-sm w-full h-full">
-      Click here to create notifications
-      <EventHub>
-        {(add: AddFunction) => {
-          ref.current = add;
-        }}
-      </EventHub>
-    </div>
+    <EventHub>
+      {(add: AddFunction) => {
+        ref.current = add;
+      }}
+    </EventHub>
   );
 }
