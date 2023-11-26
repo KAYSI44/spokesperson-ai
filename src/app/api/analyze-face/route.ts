@@ -6,10 +6,10 @@ export async function POST(request: NextRequest) {
     const { image: base64 }: { image: string } = await request.json();
 
     // Decode the base64 image data
-    const imageBuffer = Buffer.from(base64 as string, 'base64');
+    const imageBuffer = Buffer.from(base64, 'base64');
 
     // Initialize AWS Rekognition
-    const rekognition = new Rekognition({ region: 'us-east-1' });
+    const rekognition = new Rekognition({ region: process.env.aws_region });
 
     // Use AWS Rekognition to process the image
     const detectFaces = new DetectFacesCommand({

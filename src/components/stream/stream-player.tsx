@@ -109,19 +109,20 @@ export default function StreamPlayer({
 
     if (base64Data.length === 0 || !analyticsOnRef.current) return;
 
-    // const { data, status } = await axios({
-    //   url: `/api/analyze-speech`,
-    //   method: 'POST',
-    //   data: {
-    //     audio: capturedAudio,
-    //   },
-    // });
+    const { data, status } = await axios({
+      url: `/api/analyze-speech`,
+      method: 'POST',
+      data: {
+        audio: base64Data,
+      },
+    });
 
-    // if (status != 200) {
-    //   throw new Error(data?.error?.message ?? 'An error occured');
-    // }
+    const transcribedText = data?.result?.text ?? '';
+    console.log({ transcribedText });
 
-    // console.log(data);
+    if (status != 200) {
+      throw new Error(data?.error?.message ?? 'An error occured');
+    }
   }
 
   async function startAudioCapture() {
