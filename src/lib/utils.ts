@@ -24,3 +24,38 @@ export function blobToBase64(blob: Blob): Promise<string> {
     reader.readAsDataURL(blob);
   });
 }
+
+export function bytesToSize(bytes: number) {
+  var k = 1000;
+  var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  if (bytes === 0) {
+    return '0 Bytes';
+  }
+  var i = Math.floor(Math.log(bytes) / Math.log(k));
+  return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
+}
+
+export function downloadFile(base64AudioData: string) {
+  const byteCharacters = atob(base64AudioData);
+  const byteNumbers = new Array(byteCharacters.length);
+
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], { type: 'audio/wav' });
+
+  const url = URL.createObjectURL(blob);
+
+  // Createa a temporary link and trigger the download
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'captured_audio.wav';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  // Revoke the object URL to free up resources
+  URL.revokeObjectURL(url);
+}

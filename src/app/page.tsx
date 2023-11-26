@@ -10,8 +10,16 @@ export default function Home() {
         <AnalyticsToggle />
       </div>
       <div className="max-w-4xl lg:mx-auto mx-2 grid grid-cols-2 grid-rows-1 gap-2 min-h-[80vh]">
-        <StreamPlayer className="col-start-1 col-end-2 row-span-1" />
-        {/* <StreamPlayer className="col-start-2 col-end-3 row-span-1" /> */}
+        {/* <StreamPlayer
+          className="col-start-1 col-end-2 row-span-1"
+          videoId="xKrgmNRHR0100FYLQIywxhkLJt3L00xBajwM3FaJs01okkA"
+          playbackId="8QTvPdOAQZKYCxXcAy1w2CQEVUdeRTCw5dGDO53eueE"
+        /> */}
+        <StreamPlayer
+          className="col-start-1 col-end-2 row-span-1"
+          videoId="QoBSJukQL8sTOj7ajvvvYlNF1spSbjMFtXt9AFI1Lo00"
+          playbackId="7Xoqe3ndrAqgNXEx1f39RQ7Jzv02gkoRwW5K2nHlzP01U"
+        />
       </div>
     </main>
   );

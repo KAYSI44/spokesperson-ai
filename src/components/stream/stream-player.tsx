@@ -5,14 +5,23 @@ import { blobToBase64, cn } from '@/lib/utils';
 import MuxVideo from '@mux/mux-video-react';
 import { useEffect, useRef, useContext } from 'react';
 import { AnalyticsContext } from '@/context/analytics-context';
+import { RecordRTCPromisesHandler } from '@/third-party/RecordRTC';
 
 interface StreamPlayerProps {
   className?: string;
+  videoId: string;
+  playbackId: string;
 }
 
-export default function StreamPlayer({ className }: StreamPlayerProps) {
+export default function StreamPlayer({
+  className,
+  videoId,
+  playbackId,
+}: StreamPlayerProps) {
   const intervalId = useRef<NodeJS.Timeout>();
   const videoRef = useRef<HTMLVideoElement>();
+
+  const recorderRef = useRef<RecordRTCPromisesHandler>();
 
   const { analyticsOn } = useContext(AnalyticsContext);
   const analyticsOnRef = useRef(analyticsOn);
@@ -26,10 +35,17 @@ export default function StreamPlayer({ className }: StreamPlayerProps) {
     if (intervalId.current !== undefined) clearInterval(intervalId.current);
 
     // Start capturing frames periodically
-    intervalId.current = setInterval(captureFrame, 5000);
+    intervalId.current = setInterval(() => {
+      // captureFrame();
+      analyzeSpeech();
+      startAudioCapture();
+    }, 5000);
 
     // Clean up the interval when the component is unmounted
-    return () => clearInterval(intervalId.current);
+    return () => {
+      clearInterval(intervalId.current);
+      recorderRef.current?.stopRecording(() => {});
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -82,6 +98,53 @@ export default function StreamPlayer({ className }: StreamPlayerProps) {
     console.log(data);
   }
 
+  async function analyzeSpeech() {
+    if (recorderRef.current === undefined) return;
+
+    const blob = await new Promise<Blob>(
+      (resolve) => recorderRef.current?.stopRecording((blob) => resolve(blob)),
+    );
+
+    const base64Data = await blobToBase64(blob);
+
+    if (base64Data.length === 0 || !analyticsOnRef.current) return;
+
+    // const { data, status } = await axios({
+    //   url: `/api/analyze-speech`,
+    //   method: 'POST',
+    //   data: {
+    //     audio: capturedAudio,
+    //   },
+    // });
+
+    // if (status != 200) {
+    //   throw new Error(data?.error?.message ?? 'An error occured');
+    // }
+
+    // console.log(data);
+  }
+
+  async function startAudioCapture() {
+    const video = videoRef.current;
+
+    // Ensure the video element is loaded
+    if (!video) return;
+
+    const videoStream = (video as unknown as HTMLCanvasElement).captureStream();
+    const audioTrack = videoStream.getAudioTracks()[0];
+
+    const audioStream = new MediaStream();
+    audioStream.addTrack(audioTrack);
+
+    recorderRef.current = new RecordRTCPromisesHandler(audioStream, {
+      mimeType: 'audio/wav',
+      disableLogs: true,
+      type: 'audio',
+    });
+
+    await recorderRef.current.startRecording();
+  }
+
   return (
     <div
       className={cn(
@@ -92,16 +155,16 @@ export default function StreamPlayer({ className }: StreamPlayerProps) {
       <MuxVideo
         ref={videoRef}
         className="w-full h-full"
-        playbackId="8QTvPdOAQZKYCxXcAy1w2CQEVUdeRTCw5dGDO53eueE"
+        playbackId={playbackId}
         metadata={{
-          video_id: 'xKrgmNRHR0100FYLQIywxhkLJt3L00xBajwM3FaJs01okkA',
+          video_id: videoId,
           video_title: 'Super Interesting Video',
           viewer_user_id: 'user-id-bc-789',
         }}
         streamType="on-demand"
         controls
-        autoPlay
-        muted
+        autoPlay={false}
+        muted={false}
       />
     </div>
   );
