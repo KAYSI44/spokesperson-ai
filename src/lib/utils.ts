@@ -1,8 +1,14 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
- 
+import { type ClassValue, clsx } from 'clsx';
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  colors,
+  animals,
+} from 'unique-names-generator';
+import { twMerge } from 'tailwind-merge';
+
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function blobToBase64(blob: Blob): Promise<string> {
@@ -58,4 +64,11 @@ export function downloadFile(base64AudioData: string) {
 
   // Revoke the object URL to free up resources
   URL.revokeObjectURL(url);
+}
+
+export function generateRandomID() {
+  const randomName = uniqueNamesGenerator({
+    dictionaries: [adjectives, colors, animals],
+  });
+  return randomName;
 }

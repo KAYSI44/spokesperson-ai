@@ -1,9 +1,8 @@
-import { useParams } from 'next/navigation';
+import { IDENTITY } from '@/lib/constants';
+import { useLocalParticipant } from '@livekit/components-react';
 
 export default function useInterviewer() {
-  const params = useParams();
-  const meetingID = params.id;
-
-  const isInterviewer = meetingID === 'new';
+  const { localParticipant } = useLocalParticipant();
+  const isInterviewer = localParticipant.identity === IDENTITY.HOST;
   return { isInterviewer };
 }

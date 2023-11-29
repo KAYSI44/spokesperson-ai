@@ -19,8 +19,8 @@ export default function MagicCard({
   href,
 }: MagicCardPops) {
   return (
-    <Link href={href}>
-      <div className={cn(styles['card'], 'w-64 h-72', className)}>
+    <Link href={href} className={cn(className)}>
+      <div className={cn(styles['card'], 'w-full h-full')}>
         {children}
         <div className={styles['shine']}></div>
         <div className={styles['background']}>

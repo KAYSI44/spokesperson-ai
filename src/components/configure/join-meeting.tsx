@@ -9,13 +9,14 @@ export default function JoinMeeting() {
   const [meetingID, setMeetingID] = useState('');
 
   return (
-    <div className="flex flex-col gap-2 items-stretch">
+    <>
       <Input
         placeholder="Meeting ID"
         value={meetingID}
         onChange={(e) => setMeetingID(e.target.value)}
+        className="col-start-3 col-end-4 row-start-1 row-end-2"
       />
-      <MagicCard href={`/meeting/${meetingID}`}>
+      <MagicCard href={`/meeting/${meetingID}`} className="col-start-3 col-end-4 row-start-2 row-end-3">
         <MagicCard.Icon>
           <BriefcaseIcon className="stroke-[1.2] p-1" />
         </MagicCard.Icon>
@@ -24,6 +25,6 @@ export default function JoinMeeting() {
           You are being interviewed. Join with a meeting code.
         </MagicCard.Description>
       </MagicCard>
-    </div>
+    </>
   );
 }

@@ -51,3 +51,9 @@ export type KeyPhrasesAnalysisOutput = {
     keyPhrases: string[];
   };
 } & ErrorOutput;
+
+export type AccessTokenOutput = {
+  result?: {
+    token: string;
+  };
+} & ErrorOutput;

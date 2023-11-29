@@ -7,12 +7,12 @@ import StreamPlayer from '@/components/stream/stream-player';
 export default function MeetingPage() {
   return (
     <main>
-      <AnalysisEvents />
-      <div className="mb-8 mt-8 flex items-center justify-center gap-4">
-        {/* <MagicButton dotsAmount={10}>Start Interview</MagicButton> */}
-        <AnalyticsToggle />
-      </div>
       <RoomContext>
+        <AnalysisEvents />
+        <div className="mb-8 mt-8 flex items-center justify-center gap-4">
+          {/* <MagicButton dotsAmount={10}>Start Interview</MagicButton> */}
+          <AnalyticsToggle />
+        </div>
         <div className="max-w-4xl lg:mx-auto mx-2 grid grid-cols-2 grid-rows-1 gap-2 min-h-[80vh]">
           <StreamPlayer
             isInterviewerScreen
