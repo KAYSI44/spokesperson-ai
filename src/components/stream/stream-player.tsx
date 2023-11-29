@@ -1,9 +1,8 @@
 'use client';
 
 import axios, { type AxiosResponse } from 'axios';
-import { blobToBase64, cn, downloadFile } from '@/lib/utils';
-import MuxVideo from '@mux/mux-video-react';
-import { useEffect, useRef, useContext, useState } from 'react';
+import { blobToBase64, cn } from '@/lib/utils';
+import { useEffect, useRef, useContext, useState, useMemo } from 'react';
 import { AnalyticsContext } from '@/context/analytics-context';
 import { RecordRTCPromisesHandler } from '@/third-party/RecordRTC';
 import {
@@ -15,7 +14,14 @@ import {
   ToxicityAnalysisOutput,
   TranscribeSpeechOutput,
 } from '@/lib/dto';
+import {
+  TrackReference,
+  VideoTrack,
+  useTracks,
+} from '@livekit/components-react';
+import { Track } from 'livekit-client';
 import ControlPanel from './control-panel';
+import MuxVideo from '@mux/mux-video-react';
 
 interface StreamPlayerProps {
   className?: string;
@@ -40,10 +46,31 @@ export default function StreamPlayer({
   const { analyticsOn, addAnalysisEvent } = useContext(AnalyticsContext);
   const analyticsOnRef = useRef(analyticsOn);
 
-  const [isMock, toggleMock] = useState(false);
-
   const [playbackId, setPlaybackId] = useState<string>();
   const [videoId, setVideoId] = useState<string>();
+
+  const [isMock, toggleMock] = useState(true);
+
+  const tracks = useTracks(
+    [
+      { source: Track.Source.Camera, withPlaceholder: true },
+      { source: Track.Source.ScreenShare, withPlaceholder: false },
+    ],
+    { onlySubscribed: false },
+  );
+
+  const remoteTrack = tracks.find((track) => !track.participant.isLocal);
+
+  useEffect(() => {
+    if (isMock) {
+      setPlaybackId(mockPlaybackId);
+      setVideoId(mockVideoId);
+    } else {
+      setPlaybackId(undefined);
+      setVideoId(undefined);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMock]);
 
   useEffect(() => {
     if (isMock) {
@@ -286,20 +313,26 @@ export default function StreamPlayer({
       )}
     >
       <ControlPanel isMock={isMock} toggleMock={toggleMock} />
-      <MuxVideo
-        ref={videoRef}
-        className="w-full h-full"
-        playbackId={playbackId}
-        metadata={{
-          video_id: videoId,
-          video_title: 'Super Interesting Video',
-          viewer_user_id: 'user-id-bc-789',
-        }}
-        streamType="on-demand"
-        controls
-        autoPlay={false}
-        muted={false}
-      />
+      {isMock && (
+        <MuxVideo
+          ref={videoRef}
+          className="w-full h-full"
+          playbackId={playbackId}
+          metadata={{
+            video_id: videoId,
+            video_title: 'Super Interesting Video',
+            viewer_user_id: 'user-id-bc-789',
+          }}
+          streamType="on-demand"
+          controls
+          autoPlay={false}
+          muted={false}
+        />
+      )}
+
+      {!isMock && remoteTrack && (
+        <VideoTrack className="w-full h-full" trackRef={remoteTrack as TrackReference} />
+      )}
     </div>
   );
 }
