@@ -5,12 +5,15 @@ import useMeetingID from './use-meeting-id';
 import { AccessTokenOutput } from '@/lib/dto';
 import { generateRandomID } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import { NEW_MEETING } from '@/lib/constants';
 
 export default function useAccessToken() {
   const router = useRouter();
-  const hasReplacedRouteRef = useRef(false)
+  const hasReplacedRouteRef = useRef(false);
   const { meetingID } = useMeetingID();
+
   const [accessToken, setAccessToken] = useSessionStorage('access-token', '');
+  const [oldMeetingID, setOldMeetingID] = useSessionStorage('meeting-id', '');
 
   async function generateToken(asGuest?: boolean) {
     // If host, generate a meeting ID
@@ -36,16 +39,24 @@ export default function useAccessToken() {
 
   useEffect(() => {
     (async () => {
-      if (!hasReplacedRouteRef.current && (accessToken.length === 0 || meetingID === 'new')) {
-        const { token, f_meetingID } = await generateToken(meetingID !== 'new');
+      if (
+        !hasReplacedRouteRef.current &&
+        (accessToken.length === 0 ||
+          meetingID === NEW_MEETING ||
+          meetingID !== oldMeetingID)
+      ) {
+        const { token, f_meetingID } = await generateToken(
+          meetingID !== NEW_MEETING,
+        );
         setAccessToken(token);
+        setOldMeetingID(f_meetingID);
 
         // If host, redirect to new meeting
         router.replace(`/meeting/${f_meetingID}`);
         hasReplacedRouteRef.current = true;
       }
     })();
-  }, [accessToken, meetingID]);
+  }, [accessToken, meetingID, oldMeetingID]);
 
   return { accessToken };
 }
