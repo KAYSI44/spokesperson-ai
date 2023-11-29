@@ -14,14 +14,11 @@ import {
   ToxicityAnalysisOutput,
   TranscribeSpeechOutput,
 } from '@/lib/dto';
-import {
-  TrackReference,
-  VideoTrack,
-  useTracks,
-} from '@livekit/components-react';
+import { TrackReference, useTracks } from '@livekit/components-react';
 import { Track } from 'livekit-client';
 import ControlPanel from './control-panel';
 import MuxVideo from '@mux/mux-video-react';
+import { VideoTrack } from '@/patches/video-track';
 
 interface StreamPlayerProps {
   className?: string;
@@ -331,7 +328,11 @@ export default function StreamPlayer({
       )}
 
       {!isMock && remoteTrack && (
-        <VideoTrack className="w-full h-full" trackRef={remoteTrack as TrackReference} />
+        <VideoTrack
+          mediaEl={videoRef}
+          className="w-full h-full"
+          trackRef={remoteTrack as TrackReference}
+        />
       )}
     </div>
   );
