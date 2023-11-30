@@ -1,7 +1,10 @@
 'use client';
 
+import axios from 'axios';
 import { createContext, useState, type ReactNode } from 'react';
 import {
+  AnalyticsInput,
+  AnalyticsOutput,
   FaceAnalysisOutput,
   KeyPhrasesAnalysisOutput,
   PiiAnalysisOutput,
@@ -19,7 +22,7 @@ export const AnalyticsContext = createContext({
   addAnalysisEvent: (_: AnalysisEvent) => {},
 });
 
-interface AnalysisEvent {
+export interface AnalysisEvent {
   timestamp: number;
   pii: PiiAnalysisOutput['result'];
   storedFrame: SaveFrameOutput['result'];
@@ -40,8 +43,14 @@ export default function AnalyticsProvider({
   const [analyticsOn, toggleAnalytics] = useState(false);
   const [analysisEvents, setAnalysisEvents] = useState<AnalysisEvent[]>([]);
 
-  function addAnalysisEvent(event: AnalysisEvent) {
+  async function addAnalysisEvent(event: AnalysisEvent) {
     setAnalysisEvents((events) => [event, ...events]);
+
+    await axios<AnalyticsOutput>({
+      url: `/api/analytics`,
+      method: 'POST',
+      data: { event } as AnalyticsInput,
+    });
   }
 
   return (

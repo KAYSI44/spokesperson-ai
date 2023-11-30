@@ -1,3 +1,4 @@
+import { AnalysisEvent } from '@/context/analytics-context';
 import {
   PiiEntityType,
   SentimentType,
@@ -56,4 +57,12 @@ export type AccessTokenOutput = {
   result?: {
     token: string;
   };
+} & ErrorOutput;
+
+export interface AnalyticsInput {
+  event: AnalysisEvent;
+}
+
+export type AnalyticsOutput = {
+  result?: {};
 } & ErrorOutput;

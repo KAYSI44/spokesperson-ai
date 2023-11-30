@@ -3,7 +3,7 @@
 import axios, { type AxiosResponse } from 'axios';
 import { blobToBase64, cn } from '@/lib/utils';
 import { useEffect, useRef, useContext, useState, useMemo } from 'react';
-import { AnalyticsContext } from '@/context/analytics-context';
+import { AnalysisEvent, AnalyticsContext } from '@/context/analytics-context';
 import { RecordRTCPromisesHandler } from '@/third-party/RecordRTC';
 import {
   FaceAnalysisOutput,
@@ -70,23 +70,15 @@ export default function StreamPlayer({
   }, [isMock]);
 
   useEffect(() => {
-    if (isMock) {
-      setPlaybackId(mockPlaybackId);
-      setVideoId(mockVideoId);
-    } else {
-      setPlaybackId(undefined);
-      setVideoId(undefined);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMock]);
-
-  useEffect(() => {
-    analyticsOnRef.current = analyticsOn && isInterviewerScreen !== true;
+    analyticsOnRef.current = analyticsOn && isInterviewerScreen === true;
   }, [analyticsOn, isInterviewerScreen]);
 
   useEffect(() => {
     // Clear existing interval if needed
-    if (intervalId.current !== undefined) clearInterval(intervalId.current);
+    if (intervalId.current !== undefined) {
+      clearInterval(intervalId.current);
+      intervalId.current = undefined;
+    }
 
     // Start capturing frames periodically
     intervalId.current = setInterval(async () => {
@@ -149,7 +141,7 @@ export default function StreamPlayer({
     });
 
     const saveReq = axios<SaveFrameOutput>({
-      url: `/api/analyze/face`,
+      url: `/api/save`,
       method: 'POST',
       data: {
         image: base64Data,
@@ -265,7 +257,7 @@ export default function StreamPlayer({
       throw new Error(keyPhrasesData?.error?.message ?? 'An error occured');
     }
 
-    addAnalysisEvent({
+    const event = {
       timestamp,
       pii: piiData.result,
       storedFrame: saveData.result,
@@ -274,7 +266,9 @@ export default function StreamPlayer({
       keyPhrases: keyPhrasesData.result,
       transcription: transcribeData.result,
       faceAnalysis: faceAnalyzeData.result,
-    });
+    } as AnalysisEvent;
+
+    addAnalysisEvent(event);
   }
 
   async function startAudioCapture() {
