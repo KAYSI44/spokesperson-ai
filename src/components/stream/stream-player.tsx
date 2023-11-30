@@ -307,7 +307,7 @@ export default function StreamPlayer({
       {isMock && (
         <MuxVideo
           ref={videoRef}
-          className="w-full h-full"
+          className="w-full h-full object-cover"
           playbackId={playbackId}
           metadata={{
             video_id: videoId,
@@ -324,7 +324,7 @@ export default function StreamPlayer({
       {!isMock && remoteTrack && (
         <VideoTrack
           mediaEl={videoRef}
-          className="w-full h-full"
+          className="w-full h-full object-cover"
           trackRef={remoteTrack as TrackReference}
         />
       )}

@@ -58,7 +58,7 @@ export default function CamPlayer({
       <ControlPanel withInputControls isMock={isMock} toggleMock={toggleMock} />
       {isMock && (
         <MuxVideo
-          className="w-full h-full"
+          className="w-full h-full object-cover"
           playbackId={playbackId}
           metadata={{
             video_id: videoId,
@@ -73,7 +73,7 @@ export default function CamPlayer({
       )}
 
       {!isMock && localTrack && (
-        <VideoTrack className="w-full h-full" trackRef={localTrack as TrackReference} />
+        <VideoTrack className="w-full h-full object-cover" trackRef={localTrack as TrackReference} />
       )}
     </div>
   );

@@ -9,14 +9,16 @@ export default function AnalyticsToggle() {
   const { analyticsOn, toggleAnalytics } = useContext(AnalyticsContext);
   const { isInterviewer } = useInterviewer();
 
-  if (!isInterviewer) return null;
-
   return (
     <>
       <label htmlFor="" className="font-semibold text-foreground">
         Analytics {analyticsOn ? 'On' : 'Off'}
       </label>
-      <MagicSwitch toggled={analyticsOn} onToggle={toggleAnalytics} />
+      <MagicSwitch
+        toggled={analyticsOn}
+        onToggle={toggleAnalytics}
+        enabled={isInterviewer}
+      />
     </>
   );
 }

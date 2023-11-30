@@ -1,7 +1,9 @@
-'use client'
+'use client';
 
+import { BellIcon } from 'lucide-react';
 import { useTransition, animated } from '@react-spring/web';
 import { useEffect, useMemo, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 interface MessageHubProps {
   config?: {
@@ -11,6 +13,7 @@ interface MessageHubProps {
   };
   timeout?: number;
   children: (add: AddFunction) => void;
+  className?: string;
 }
 
 export type AddFunction = (msg: string) => void;
@@ -26,6 +29,7 @@ export default function EventHub({
   config = { tension: 125, friction: 20, precision: 0.1 },
   timeout = 3000,
   children,
+  className,
 }: MessageHubProps) {
   const refMap = useMemo(() => new WeakMap(), []);
   const cancelMap = useMemo(() => new WeakMap(), []);
@@ -58,7 +62,12 @@ export default function EventHub({
   }, []);
 
   return (
-    <div className="fixed z-10 w-auto bottom-10 mx-auto left-10 right-10 flex flex-col pointer-events-none items-end">
+    <div
+      className={cn(
+        className,
+        'w-full auto flex flex-col-reverse h-full pointer-events-none items-end',
+      )}
+    >
       {transitions(({ life, ...style }, item) => (
         <animated.div
           style={style}
@@ -66,12 +75,16 @@ export default function EventHub({
         >
           <div
             ref={(ref: HTMLDivElement) => ref && refMap.set(item, ref)}
-            className="text-white bg-[#445159] opacity-90 px-6 py-4 text-md grid grid-cols-[1fr_auto] gap-2 overflow-hidden h-auto rounded-sm mt-2"
+            className="bg-muted/20 border border-muted-foreground/20 px-6 py-4 text-md overflow-hidden h-auto rounded-sm mt-2"
           >
-            <animated.div
-              style={{ right: life }}
-              className="absolute bottom-0 left-0 w-auto bg-gradient-to-br from-[#00b4e6] to-[#00f0e0] h-[5px]"
-            />
+            <div className="flex items-center mb-2 gap-2">
+              <div className="w-8 h-8 rounded-full bg-green-500/20 border border-green-500/30 p-2">
+                <BellIcon className="w-full h-full stroke-green-600" />
+              </div>
+              <h4 className="text-sm font-bold text-green-600">
+                Sent to Segment
+              </h4>
+            </div>
             <p>{item.msg}</p>
           </div>
         </animated.div>

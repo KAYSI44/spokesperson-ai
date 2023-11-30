@@ -18,13 +18,19 @@ import {
   ExtrudeGeometry,
   AmbientLight,
 } from 'three';
+import { cn } from '@/lib/utils';
 
 interface MagicSwitchProps {
   toggled?: boolean;
+  enabled?: boolean;
   onToggle?: (state: boolean) => void;
 }
 
-export default function MagicSwitch({ toggled, onToggle }: MagicSwitchProps) {
+export default function MagicSwitch({
+  enabled,
+  toggled,
+  onToggle,
+}: MagicSwitchProps) {
   const containerRef = useRef<HTMLElement>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -248,6 +254,8 @@ export default function MagicSwitch({ toggled, onToggle }: MagicSwitchProps) {
     scene.add(new AmbientLight(0x626267));
 
     const handlePointerMove = (e: PointerEvent) => {
+      if (enabled === false) return;
+
       if (tweenBackRef.current) {
         tweenBackRef.current.kill();
         tweenBackRef.current = undefined;
@@ -336,13 +344,15 @@ export default function MagicSwitch({ toggled, onToggle }: MagicSwitchProps) {
 
   return (
     <label
-      className={styles['switch']}
+      className={cn(styles['switch'], enabled === false && 'opacity-40')}
       ref={(el) => (containerRef.current = el as HTMLElement)}
     >
       <input
         type="checkbox"
         checked={toggled}
-        onChange={(e) => handleInputChange(e.target.checked)}
+        onChange={(e) =>
+          enabled !== false && handleInputChange(e.target.checked)
+        }
       />
       <canvas ref={canvasRef}></canvas>
     </label>
