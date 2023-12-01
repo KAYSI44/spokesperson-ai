@@ -8,7 +8,7 @@ import StreamPlayer from '@/components/stream/stream-player';
 export default function MeetingPage() {
   return (
     <RoomContext>
-      <main className="overflow-hidden max-w-7xl mx-2 lg:mx-auto grid grid-cols-[auto_42ch] grid-rows-1 gap-2">
+      <main className="overflow-hidden max-w-7xl mx-2 pt-6 lg:mx-auto grid grid-cols-[auto_42ch] grid-rows-1 gap-2">
         <AnalysisEvents className="col-start-2 col-end-3 row-start-1 row-end-2 bg-muted/10 px-2 rounded-lg" />
         <div className="col-start-1 col-end-2 row-start-1 row-end-2">
           <div className="my-6 flex items-center justify-end gap-4 px-2">

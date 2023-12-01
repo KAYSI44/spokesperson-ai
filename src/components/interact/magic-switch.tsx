@@ -254,8 +254,6 @@ export default function MagicSwitch({
     scene.add(new AmbientLight(0x626267));
 
     const handlePointerMove = (e: PointerEvent) => {
-      if (enabled === false) return;
-
       if (tweenBackRef.current) {
         tweenBackRef.current.kill();
         tweenBackRef.current = undefined;

@@ -13,22 +13,22 @@ export default function AnalysisEvents({ className }: AnalysisEventsProps) {
   const ref = useRef<null | AddFunction>(null);
   const { analysisEvents } = useContext(AnalyticsContext);
 
-  const mockMessagesIntervalIdRef = useRef<NodeJS.Timeout>();
+  // const mockMessagesIntervalIdRef = useRef<NodeJS.Timeout>();
 
-  useEffect(() => {
-    if (mockMessagesIntervalIdRef.current !== undefined) {
-      clearInterval(mockMessagesIntervalIdRef.current);
-      mockMessagesIntervalIdRef.current = undefined;
-    }
+  // useEffect(() => {
+  //   if (mockMessagesIntervalIdRef.current !== undefined) {
+  //     clearInterval(mockMessagesIntervalIdRef.current);
+  //     mockMessagesIntervalIdRef.current = undefined;
+  //   }
 
-    mockMessagesIntervalIdRef.current = setInterval(() => {
-      ref.current?.(loremIpsum());
-    }, 1000);
+  //   mockMessagesIntervalIdRef.current = setInterval(() => {
+  //     ref.current?.(loremIpsum());
+  //   }, 1000);
 
-    return () => {
-      clearInterval(mockMessagesIntervalIdRef.current);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(mockMessagesIntervalIdRef.current);
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (analysisEvents.length >= 1) {

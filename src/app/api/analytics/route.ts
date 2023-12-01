@@ -14,11 +14,16 @@ export async function POST(
     const data = await request.json();
     const { event } = data as AnalyticsInput;
 
+    const timestamp = new Date();
+
     analytics.track({
       userId: uuidv4(),
       event: 'report',
       properties: event,
+      timestamp,
     });
+
+    console.log(timestamp);
 
     return NextResponse.json({});
   } catch (e) {
