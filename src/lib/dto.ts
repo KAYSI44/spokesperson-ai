@@ -66,3 +66,9 @@ export interface AnalyticsInput {
 export type AnalyticsOutput = {
   result?: {};
 } & ErrorOutput;
+
+export type ReviewOutput = {
+  result?: {
+    events: AnalysisEvent[];
+  };
+} & ErrorOutput;

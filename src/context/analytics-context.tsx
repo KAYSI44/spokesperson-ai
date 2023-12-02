@@ -13,6 +13,7 @@ import {
   ToxicityAnalysisOutput,
   TranscribeSpeechOutput,
 } from '@/lib/dto';
+import useMeetingID from '@/hooks/use-meeting-id';
 
 export const AnalyticsContext = createContext({
   analyticsOn: false,
@@ -40,6 +41,7 @@ interface AnalyticsProviderProps {
 export default function AnalyticsProvider({
   children,
 }: AnalyticsProviderProps) {
+  const { meetingID } = useMeetingID();
   const [analyticsOn, toggleAnalytics] = useState(false);
   const [analysisEvents, setAnalysisEvents] = useState<AnalysisEvent[]>([]);
 
@@ -47,7 +49,7 @@ export default function AnalyticsProvider({
     setAnalysisEvents((events) => [event, ...events]);
 
     await axios<AnalyticsOutput>({
-      url: `/api/analytics`,
+      url: `/api/analytics/${meetingID}`,
       method: 'POST',
       data: { event } as AnalyticsInput,
     });

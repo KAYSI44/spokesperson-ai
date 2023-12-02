@@ -2,10 +2,12 @@ import { NextResponse, type NextRequest } from 'next/server';
 import {
   S3,
   PutObjectCommand,
+  GetObjectCommand,
   type PutObjectCommandInput,
 } from '@aws-sdk/client-s3';
 import { v4 as uuid } from 'uuid';
 import { SaveFrameOutput } from '@/lib/dto';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 export async function POST(
   request: NextRequest,
@@ -34,11 +36,19 @@ export async function POST(
     const uploadCommand = new PutObjectCommand(params);
     await s3.send(uploadCommand);
 
-    // Get the uri to the uploaded file
-    const s3LocationUri = `https://${process.env.aws_s3_bucket_name}.s3.${process.env.aws_region}.amazonaws.com/${key}`;
+    // Generate a link to view or download the image
+    const getObjectCommand = new GetObjectCommand({
+      Bucket: process.env.aws_s3_bucket_name,
+      Key: key,
+    })
+    const uri = await getSignedUrl(
+      s3,
+      getObjectCommand,
+      { expiresIn: 24 * 60 * 60 },
+    );
 
     return NextResponse.json(
-      { result: { uri: s3LocationUri } },
+      { result: { uri } },
       { status: 200 },
     );
   } catch (error) {

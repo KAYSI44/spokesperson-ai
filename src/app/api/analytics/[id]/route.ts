@@ -1,7 +1,6 @@
 import { AnalyticsInput, AnalyticsOutput } from '@/lib/dto';
 import { NextRequest, NextResponse } from 'next/server';
 import { Analytics } from '@segment/analytics-node';
-import { v4 as uuidv4 } from 'uuid';
 
 const analytics = new Analytics({
   writeKey: process.env.SEGMENT_WRITE_KEY as string,
@@ -9,21 +8,17 @@ const analytics = new Analytics({
 
 export async function POST(
   request: NextRequest,
+  { params }: { params: { id: string } },
 ): Promise<NextResponse<AnalyticsOutput>> {
   try {
     const data = await request.json();
     const { event } = data as AnalyticsInput;
 
-    const timestamp = new Date();
-
     analytics.track({
-      userId: uuidv4(),
+      userId: params.id, // using meeting id as user id
       event: 'report',
       properties: event,
-      timestamp,
     });
-
-    console.log(timestamp);
 
     return NextResponse.json({});
   } catch (e) {
