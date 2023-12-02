@@ -18,17 +18,13 @@ export async function GET(
     // Initialize S3
     const s3 = new S3({ region: process.env.aws_region });
 
-    // Get today's Unix timestamp (milliseconds since epoch)
-    // const todayUnixTimestamp = new Date().setUTCHours(0, 0, 0, 0);
-    const todayUnixTimestamp = "1701388800000";
-
-    // Convert the timestamp to a string representing the folder
-    const todayFolder = `${process.env.SEGMENT_S3_PATH_PREFIX}/${todayUnixTimestamp}/`;
+    // Folder with this meeting's data (from Segment)
+    const segmentFolder = `${process.env.SEGMENT_S3_PATH_PREFIX}/${params.id}`;
 
     // List objects in the specified path
     const listObjectsCommand = new ListObjectsV2Command({
       Bucket: process.env.aws_s3_bucket_name,
-      Prefix: todayFolder,
+      Prefix: segmentFolder,
     });
     const objects = await s3.send(listObjectsCommand);
 
@@ -53,7 +49,6 @@ export async function GET(
         (data) =>
           JSON.parse(Buffer.from(data).toString('utf-8')) as SegmentDocument,
       )
-      .filter((doc) => doc.userId === params.id) // user id represents meeting id
       .map((doc) => doc.properties);
 
     return NextResponse.json({
