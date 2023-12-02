@@ -1,11 +1,12 @@
 'use client';
 
 import { sample } from 'lodash';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { cn } from '@/lib/utils';
 import styles from '@/styles/feedback-reactions.module.scss';
 import useReviewData from '@/hooks/use-review-data';
 import useMeetingID from '@/hooks/use-meeting-id';
+import { ReviewContext } from '@/context/review-context';
 
 enum Reaction {
   ANGRY = 'angry',
@@ -17,6 +18,8 @@ enum Reaction {
 
 export default function FeedbackReactions() {
   // const cycleIntervalRef = useRef<NodeJS.Timeout>();
+
+  const { currentTimestamp } = useContext(ReviewContext);
   const [currentReaction, setReaction] = useState<Reaction>();
 
   const { meetingID } = useMeetingID();
@@ -25,7 +28,13 @@ export default function FeedbackReactions() {
   useEffect(() => {
     if (!events || !events.length) return;
 
-    const sentiment = events[0].sentiment?.sentiment;
+    const currentEvent = events.find(
+      (event) => event?.timestamp === currentTimestamp,
+    );
+
+    if (!currentEvent) return;
+
+    const sentiment = currentEvent.sentiment?.sentiment;
     if (!sentiment) return;
 
     switch (sentiment) {
@@ -42,7 +51,7 @@ export default function FeedbackReactions() {
         setReaction(Reaction.ANGRY);
         break;
     }
-  }, [events]);
+  }, [events, currentTimestamp]);
 
   // useEffect(() => {
   //   if (cycleIntervalRef.current !== undefined) {

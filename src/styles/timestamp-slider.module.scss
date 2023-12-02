@@ -1,0 +1,33 @@
+// Define the base color for the slider
+$slider-color: #1d1d1d;
+$thumb-color: rgb(34, 178, 245);
+
+// Style the range slider
+.slider {
+  // Remove the default styling
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 10px 0;
+  width: 100%;
+
+  background-color: transparent;
+
+  // Define the track style
+  &::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 12px;
+    background: $slider-color;
+    border-radius: 0px;
+  }
+
+  // Define the thumb style
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 6px;
+    height: 32px;
+    background: $thumb-color;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-top: -12px;
+  }
+}

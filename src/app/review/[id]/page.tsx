@@ -1,7 +1,14 @@
-import FeedbackReactions from "@/components/data/feedback-reactions";
+import FeedbackReactions from '@/components/data/feedback-reactions';
+import TimestampSlider from '@/components/interact/timestamp-slider';
+import ReviewProvider from '@/context/review-context';
 
 export default function ReviewPage() {
-  return <div className="mx-auto grid place-items-center h-full">
-    <FeedbackReactions />
-  </div>;
+  return (
+    <ReviewProvider>
+      <div className="mx-auto grid place-items-center h-full">
+        <FeedbackReactions />
+        <TimestampSlider />
+      </div>
+    </ReviewProvider>
+  );
 }
