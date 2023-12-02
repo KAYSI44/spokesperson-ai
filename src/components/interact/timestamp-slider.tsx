@@ -64,12 +64,12 @@ export default function TimestampSlider({
         ))}
       </div>
       <p
-        className="absolute -bottom-6 transform -translate-x-1/2 font-light text-xs text-white"
+        className="absolute -bottom-8 transform -translate-x-1/2 font-light text-xs text-white"
         style={{
           left: `${normalizeValue(sliderValue) * 100}%`,
         }}
       >
-        {sliderValue.toFixed(2)}
+        {sliderValue.toFixed(0)}s
       </p>
     </div>
   );

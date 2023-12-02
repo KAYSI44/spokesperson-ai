@@ -24,7 +24,7 @@ export default function CurrentFrame() {
   if (!currentFrame || !frames?.length) return;
 
   return (
-    <div className="w-[36rem] h-[24rem] relative">
+    <div className="w-[48rem] h-[28rem] relative">
       {frames.map((uri) => (
         <Image
           key={uri}

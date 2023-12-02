@@ -16,7 +16,13 @@ enum Reaction {
   HAPPY = 'happy',
 }
 
-export default function FeedbackReactions() {
+interface FeedbackReactionsProps {
+  className?: string;
+}
+
+export default function FeedbackReactions({
+  className,
+}: FeedbackReactionsProps) {
   // const cycleIntervalRef = useRef<NodeJS.Timeout>();
 
   const { currentTimestamp } = useContext(ReviewContext);
@@ -78,7 +84,7 @@ export default function FeedbackReactions() {
   if (!events || !events.length) return null;
 
   return (
-    <div className="p-6 rounded-lg bg-muted/50">
+    <div className={cn('p-6 rounded-lg bg-muted/50', className)}>
       <div className="mb-4 flex justify-between items-center">
         <h3 className="font-bold text-lg text-muted-foreground/80">
           Sentiment
