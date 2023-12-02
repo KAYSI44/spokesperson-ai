@@ -9,9 +9,11 @@ import useMeetingID from '@/hooks/use-meeting-id';
 
 interface TimestampSliderProps {
   sliderPadding?: number;
+  className?: string;
 }
 
 export default function TimestampSlider({
+  className,
   sliderPadding = 3,
 }: TimestampSliderProps) {
   const { meetingID } = useMeetingID();
@@ -39,7 +41,7 @@ export default function TimestampSlider({
   }, [sliderValue]);
 
   return (
-    <div className="w-[300px] relative">
+    <div className={cn('w-[300px] relative', className)}>
       <input
         type="range"
         step="0.001"
@@ -47,7 +49,7 @@ export default function TimestampSlider({
         max={maxTimestamp}
         value={sliderValue}
         onChange={(e) => setSliderValue(e.target.valueAsNumber)}
-        className={cn('w-full h-full', styles['slider'])}
+        className={cn('w-full h-full cursor-w-resize', styles['slider'])}
       />
       <div className="w-full pointer-events-none">
         {timestamps.map((timestamp) => (
