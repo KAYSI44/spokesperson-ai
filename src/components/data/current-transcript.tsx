@@ -24,17 +24,19 @@ export default function CurrentTranscript({
     return currentEvent?.transcription?.text;
   }, [currentTimestamp, events]);
 
-  if (!currentTranscript) return;
-
   return (
-    <div className={cn('p-6 rounded-lg bg-muted/50 overflow-hidden', className)}>
+    <div
+      className={cn('p-6 rounded-lg bg-muted/50 overflow-hidden', className)}
+    >
       <div className="mb-4 flex justify-between items-center">
         <h3 className="font-bold text-lg text-muted-foreground/80">
           Transcript
         </h3>
       </div>
 
-      <p className="overflow-hidden text-ellipsis line-clamp-2 h-12">{currentTranscript}</p>
+      <p className="overflow-hidden text-ellipsis line-clamp-2 h-12">
+        {currentTranscript ?? 'NIL'}
+      </p>
     </div>
   );
 }

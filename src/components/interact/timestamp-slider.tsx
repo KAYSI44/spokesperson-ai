@@ -24,7 +24,7 @@ export default function TimestampSlider({
   const { currentTimestamp, setCurrentTimestamp } = useContext(ReviewContext);
   const [sliderValue, setSliderValue] = useState(timestamps[0] ?? 0);
 
-  const minTimestamp = Math.min(...timestamps) - sliderPadding;
+  const minTimestamp = Math.max(0, Math.min(...timestamps) - sliderPadding);
   const maxTimestamp = Math.max(...timestamps) + sliderPadding;
 
   const normalizeValue = (value: number) =>
@@ -56,7 +56,7 @@ export default function TimestampSlider({
           <div
             key={timestamp}
             className={cn(
-              'w-1 h-3 absolute top-[22px] bg-blue-500 transition-opacity',
+              'w-1 h-3 absolute bottom-0 bg-blue-500 transition-opacity',
               currentTimestamp === timestamp ? 'opacity-0' : 'opacity-50',
             )}
             style={{

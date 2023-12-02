@@ -90,7 +90,7 @@ export default function FeedbackReactions({
           Sentiment
         </h3>
         <p className="font-bold text-sm">
-          {events[0].sentiment?.sentiment ?? 'UNKNOWN'}
+          {events[0].sentiment?.sentiment ?? 'NIL'}
         </p>
       </div>
 
