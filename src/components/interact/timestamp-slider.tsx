@@ -1,11 +1,13 @@
 'use client';
 
+import { AlertCircleIcon } from 'lucide-react';
 import styles from '@/styles/timestamp-slider.module.scss';
 import { ReviewContext } from '@/context/review-context';
 import { cn, secondsToMMSS } from '@/lib/utils';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useMemo } from 'react';
 import useReviewData from '@/hooks/use-review-data';
 import useMeetingID from '@/hooks/use-meeting-id';
+import { TOXICITY_THRESHOLD } from '@/lib/constants';
 
 interface TimestampSliderProps {
   sliderPadding?: number;
@@ -19,7 +21,26 @@ export default function TimestampSlider({
   const { meetingID } = useMeetingID();
   const { events } = useReviewData(meetingID);
 
-  const timestamps = events?.map((event) => event.timestamp) ?? [];
+  const timestamps =
+    events?.map((event) => event.timestamp).sort((a, b) => a - b) ?? [];
+
+  const toxicityTimeSeries = useMemo(() => {
+    if (!events) return undefined;
+
+    const filteredEvents = events
+      .map(
+        (event) =>
+          event.toxicity?.map((toxicity) => ({
+            time: event.timestamp,
+            value: toxicity.toxicity,
+          }))?.[0],
+      )
+      .filter((event) => !!event) as { time: number; value: number }[];
+
+    return filteredEvents.sort((a, b) =>
+      a?.time > b?.time ? 1 : a?.time < b?.time ? -1 : 0,
+    );
+  }, [events]);
 
   const { currentTimestamp, setCurrentTimestamp } = useContext(ReviewContext);
   const [sliderValue, setSliderValue] = useState(timestamps[0] ?? 0);
@@ -56,7 +77,7 @@ export default function TimestampSlider({
           <div
             key={timestamp}
             className={cn(
-              'w-1 h-3 absolute -bottom-[2.5px] bg-blue-500 transition-opacity',
+              'w-1 h-3 absolute -bottom-[2.5px] bg-blue-500 transform -translate-x-1/2 transition-opacity',
               currentTimestamp === timestamp ? 'opacity-0' : 'opacity-50',
             )}
             style={{
@@ -64,6 +85,24 @@ export default function TimestampSlider({
             }}
           />
         ))}
+        {toxicityTimeSeries &&
+          toxicityTimeSeries.map((toxicity) => (
+            <div
+              key={toxicity.time}
+              className={cn(
+                'w-4 h-4 rounded-full absolute p-[2px] subpixel-antialiased pt-[3px] bottom-0 transform -translate-y-1/2 -translate-x-1/2 bg-red-500 transition-opacity before:absolute before:inset-0 before:animate-ping before:rounded-full before:bg-red-500',
+                currentTimestamp === toxicity.time ||
+                  toxicity.value < TOXICITY_THRESHOLD
+                  ? 'opacity-0'
+                  : 'opacity-100',
+              )}
+              style={{
+                left: `${normalizeValue(toxicity.time) * 100}%`,
+              }}
+            >
+              <AlertCircleIcon className="w-full h-full stroke-white" />
+            </div>
+          ))}
       </div>
       <p
         className="absolute pointer-events-none -bottom-4 transform -translate-x-1/2 font-light text-xs text-white"
