@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import { Toggle } from '../ui/toggle';
 import BoundingBox from './bounding-box';
+import FaceLandmarks from './face-landmarks';
 
 interface CurrentFrameProps {
   className?: string;
@@ -40,6 +41,15 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
     );
 
     return boundingBoxes?.[0];
+  }, [currentTimestamp, events]);
+
+  const faceLandmarks = useMemo(() => {
+    const currentEvent = events?.find(
+      (event) => event.timestamp === currentTimestamp,
+    );
+    const landmarks = currentEvent?.faceAnalysis?.map((face) => face.Landmarks);
+
+    return landmarks?.[0];
   }, [currentTimestamp, events]);
 
   return (
@@ -74,21 +84,28 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
           className,
         )}
       >
-        {frames && frames.map((uri) => (
-          <Image
-            key={uri}
-            src={uri}
-            alt=""
-            fill
-            priority
-            className={cn(
-              'object-cover transition-opacity',
-              uri !== currentFrame ? 'opacity-0' : 'opacity-100',
-            )}
-          />
-        ))}
+        {frames &&
+          frames.map((uri) => (
+            <Image
+              key={uri}
+              src={uri}
+              alt=""
+              fill
+              priority
+              className={cn(
+                'object-cover transition-opacity',
+                uri !== currentFrame ? 'opacity-0' : 'opacity-100',
+              )}
+            />
+          ))}
 
-        {faceFocused && faceBoundingBox && <BoundingBox boundingBox={faceBoundingBox} />}
+        {faceFocused && (
+          <div className="w-full h-full">
+            {faceBoundingBox && <BoundingBox boundingBox={faceBoundingBox} />}
+
+            {faceLandmarks && <FaceLandmarks landmarks={faceLandmarks} />}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -4,6 +4,11 @@ import {
   SentimentType,
   ToxicContentType,
 } from '@aws-sdk/client-comprehend';
+import {
+  LandmarkType,
+  EmotionName,
+  GenderType,
+} from '@aws-sdk/client-rekognition';
 
 export interface BoundingBox {
   Height: number;
@@ -12,12 +17,18 @@ export interface BoundingBox {
   Width: number;
 }
 
+export interface FaceLandmark {
+  Type: LandmarkType;
+  X: number;
+  Y: number;
+}
+
 interface FaceAnalysis {
   BoundingBox: BoundingBox;
   Confidence: number;
   Emotions: {
     Confidence: number;
-    Type: string;
+    Type: EmotionName;
   }[];
   EyeDirection: {
     Confidence: number;
@@ -30,13 +41,9 @@ interface FaceAnalysis {
   };
   Gender: {
     Confidence: number;
-    Value: string;
+    Value: GenderType;
   };
-  Landmarks: {
-    Type: string;
-    X: number;
-    Y: number;
-  }[];
+  Landmarks: FaceLandmark[];
   Pose: {
     Pitch: number;
     Roll: number;

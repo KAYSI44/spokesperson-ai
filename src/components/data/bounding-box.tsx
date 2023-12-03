@@ -21,7 +21,7 @@ export default function BoundingBox({ boundingBox }: BoundingBoxProps) {
   };
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+    <div className="absolute inset-0">
       <div style={squareStyles} className="border-2 border-blue-600"></div>
     </div>
   );
