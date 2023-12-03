@@ -51,6 +51,27 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
     return boundingBoxes?.[0];
   }, [currentTimestamp, events]);
 
+  const faceEmotion = useMemo(() => {
+    const currentEvent = events?.find(
+      (event) => event.timestamp === currentTimestamp,
+    );
+    const emotions = currentEvent?.faceAnalysis
+      ?.map((face) => {
+        if (!face.Emotions?.length) return undefined;
+
+        const highestConfidenceEmotions = face.Emotions?.reduce(
+          (prev, current) =>
+            current.Confidence > prev.Confidence ? current : prev,
+          face.Emotions[0],
+        );
+
+        return highestConfidenceEmotions;
+      })
+      .filter((emotion) => !!emotion);
+
+    return emotions?.[0];
+  }, [currentTimestamp, events]);
+
   const faceLandmarks = useMemo(() => {
     const currentEvent = events?.find(
       (event) => event.timestamp === currentTimestamp,
@@ -154,7 +175,12 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
 
         {faceFocused && (
           <div className="w-full h-full">
-            {faceBoundingBox && <BoundingBox boundingBox={faceBoundingBox} />}
+            {faceBoundingBox && (
+              <BoundingBox
+                boundingBox={faceBoundingBox}
+                label={faceEmotion?.Type}
+              />
+            )}
 
             {faceLandmarks && <FaceLandmarks landmarks={faceLandmarks} />}
           </div>
