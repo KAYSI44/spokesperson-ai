@@ -89,10 +89,10 @@ export default function StreamPlayer({
 
     // Start capturing frames periodically
     intervalId.current = setInterval(async () => {
-      startAudioCapture();
+      await startAudioCapture();
       await new Promise((resolve) => setTimeout(resolve, analyticsIntervalMs));
       captureFrame();
-    }, analyticsIntervalMs + 100);
+    }, analyticsIntervalMs + 800);
 
     // Clean up the interval when the component is unmounted
     return () => {
@@ -206,8 +206,6 @@ export default function StreamPlayer({
 
     if (base64Data.length === 0 || !analyticsOnRef.current)
       throw new Error('No audio data');
-
-    downloadFile(base64Data);
 
     const transcribeReq = axios<TranscribeSpeechOutput>({
       url: `/api/speech`,
