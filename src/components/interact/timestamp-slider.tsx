@@ -2,7 +2,7 @@
 
 import styles from '@/styles/timestamp-slider.module.scss';
 import { ReviewContext } from '@/context/review-context';
-import { cn } from '@/lib/utils';
+import { cn, secondsToMMSS } from '@/lib/utils';
 import { useState, useEffect, useContext } from 'react';
 import useReviewData from '@/hooks/use-review-data';
 import useMeetingID from '@/hooks/use-meeting-id';
@@ -56,7 +56,7 @@ export default function TimestampSlider({
           <div
             key={timestamp}
             className={cn(
-              'w-1 h-3 absolute bottom-0 bg-blue-500 transition-opacity',
+              'w-1 h-3 absolute -bottom-[2.5px] bg-blue-500 transition-opacity',
               currentTimestamp === timestamp ? 'opacity-0' : 'opacity-50',
             )}
             style={{
@@ -66,12 +66,12 @@ export default function TimestampSlider({
         ))}
       </div>
       <p
-        className="absolute pointer-events-none -bottom-8 transform -translate-x-1/2 font-light text-xs text-white"
+        className="absolute pointer-events-none -bottom-4 transform -translate-x-1/2 font-light text-xs text-white"
         style={{
           left: `${normalizeValue(sliderValue) * 100}%`,
         }}
       >
-        {sliderValue.toFixed(0)}s
+        {secondsToMMSS(sliderValue)}
       </p>
     </div>
   );
