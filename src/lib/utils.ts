@@ -6,6 +6,7 @@ import {
   animals,
 } from 'unique-names-generator';
 import { twMerge } from 'tailwind-merge';
+import { SIGMOID_STEEPNESS } from './constants';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -73,3 +74,6 @@ export function generateRandomID() {
   return randomName;
 }
 
+export function sigmoid(x: number, steepness: number): number {
+  return 1 / (1 + Math.exp(-steepness * x));
+}

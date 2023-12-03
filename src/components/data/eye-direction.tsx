@@ -15,12 +15,17 @@ import {
   TextureLoader,
 } from 'three';
 import gsap from 'gsap';
+import { cn } from '@/lib/utils';
 
 interface EyeDirectionProps {
   eyeDirection: EyeDirectionType;
+  className?: string;
 }
 
-export default function EyeDirection({ eyeDirection }: EyeDirectionProps) {
+export default function EyeDirection({
+  eyeDirection,
+  className,
+}: EyeDirectionProps) {
   const containerRef = useRef<HTMLElement>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cameraRef = useRef<PerspectiveCamera>();
@@ -156,11 +161,13 @@ export default function EyeDirection({ eyeDirection }: EyeDirectionProps) {
 
     leftEyeRef.current = leftEye;
     rightEyeRef.current = rightEye;
+
+    updateEyesDirection();
   }, []);
 
   return (
     <div
-      className="w-1/3 aspect-video absolute top-0 left-0 m-2 bg-muted/50"
+      className={cn(className)}
       ref={(el) => (containerRef.current = el as HTMLElement)}
     >
       <canvas ref={canvasRef}></canvas>

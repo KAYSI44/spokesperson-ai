@@ -6,12 +6,19 @@ import { useContext, useState, useMemo } from 'react';
 import { ReviewContext } from '@/context/review-context';
 import useMeetingID from '@/hooks/use-meeting-id';
 import useReviewData from '@/hooks/use-review-data';
-import { cn } from '@/lib/utils';
+import { cn, sigmoid } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import { Toggle } from '../ui/toggle';
 import BoundingBox from './bounding-box';
 import FaceLandmarks from './face-landmarks';
 import EyeDirection from './eye-direction';
+import {
+  EYES_OPEN_WEIGHT,
+  EYE_DIRECTION_WEIGHT,
+  PITCH_THRESHOLD,
+  SIGMOID_STEEPNESS,
+  YAW_THRESHOLD,
+} from '@/lib/constants';
 
 interface CurrentFrameProps {
   className?: string;
@@ -63,6 +70,40 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
 
     return directions?.[0];
   }, [currentTimestamp, events]);
+
+  const eyesOpen = useMemo(() => {
+    const currentEvent = events?.find(
+      (event) => event.timestamp === currentTimestamp,
+    );
+    const scores = currentEvent?.faceAnalysis?.map((face) => face.EyesOpen);
+
+    return scores?.[0];
+  }, [currentTimestamp, events]);
+
+  const awarenessScore = useMemo(() => {
+    if (!eyeDirection || !eyesOpen) return;
+
+    const { Pitch, Yaw } = eyeDirection;
+    const { Confidence } = eyesOpen;
+
+    // Calculate awareness based on pitch and yaw
+    const awarenessPitch = sigmoid(
+      Math.abs(Pitch) - PITCH_THRESHOLD,
+      SIGMOID_STEEPNESS,
+    );
+    const awarenessYaw = sigmoid(
+      Math.abs(Yaw) - YAW_THRESHOLD,
+      SIGMOID_STEEPNESS,
+    );
+
+    // Blend the awareness values, with weights for eye direction and eyes open
+    const awarenessMetric =
+      (((awarenessPitch + awarenessYaw) / 2) * EYE_DIRECTION_WEIGHT +
+        Confidence * EYES_OPEN_WEIGHT) /
+      (EYE_DIRECTION_WEIGHT + EYES_OPEN_WEIGHT);
+
+    return awarenessMetric;
+  }, [eyesOpen, eyeDirection]);
 
   return (
     <div className="p-6 rounded-lg bg-muted/50 overflow-hidden w-full">
@@ -119,7 +160,32 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
           </div>
         )}
 
-        {eyeDirection && <EyeDirection eyeDirection={eyeDirection} />}
+        {faceFocused && (
+          <div className="w-1/3 absolute top-0 left-0 m-2 py-4 bg-muted/50">
+            {eyeDirection && (
+              <EyeDirection
+                className="w-full aspect-video"
+                eyeDirection={eyeDirection}
+              />
+            )}
+            <p className="text-xs text-blue-500 font-semibold ml-4">
+              Eyes Open:{' '}
+              <span>
+                {eyesOpen !== undefined
+                  ? `${Math.round(eyesOpen.Confidence * 100) / 100}%`
+                  : 'NIL'}
+              </span>
+            </p>
+            <p className="text-xs mt-2 text-blue-500 font-semibold ml-4">
+              Awareness Score:{' '}
+              <span>
+                {awarenessScore !== undefined
+                  ? `${Math.round(awarenessScore * 100) / 100}%`
+                  : 'NIL'}
+              </span>
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
