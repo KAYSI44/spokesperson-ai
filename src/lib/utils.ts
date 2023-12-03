@@ -6,7 +6,13 @@ import {
   animals,
 } from 'unique-names-generator';
 import { twMerge } from 'tailwind-merge';
-import { SIGMOID_STEEPNESS } from './constants';
+import {
+  EYES_OPEN_WEIGHT,
+  EYE_DIRECTION_WEIGHT,
+  PITCH_THRESHOLD,
+  SIGMOID_STEEPNESS,
+  YAW_THRESHOLD,
+} from './constants';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -76,4 +82,28 @@ export function generateRandomID() {
 
 export function sigmoid(x: number, steepness: number): number {
   return 1 / (1 + Math.exp(-steepness * x));
+}
+
+export function calculateAwarenessScore(
+  Pitch: number,
+  Yaw: number,
+  EyesOpen: number,
+) {
+  // Calculate awareness based on pitch and yaw
+  const awarenessPitch = sigmoid(
+    Math.abs(Pitch) - PITCH_THRESHOLD,
+    SIGMOID_STEEPNESS,
+  );
+  const awarenessYaw = sigmoid(
+    Math.abs(Yaw) - YAW_THRESHOLD,
+    SIGMOID_STEEPNESS,
+  );
+
+  // Blend the awareness values, with weights for eye direction and eyes open
+  const awarenessMetric =
+    (((awarenessPitch + awarenessYaw) / 2) * EYE_DIRECTION_WEIGHT +
+      EyesOpen * EYES_OPEN_WEIGHT) /
+    (EYE_DIRECTION_WEIGHT + EYES_OPEN_WEIGHT);
+
+  return awarenessMetric;
 }

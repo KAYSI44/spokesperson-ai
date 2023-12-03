@@ -6,7 +6,7 @@ import { useContext, useState, useMemo } from 'react';
 import { ReviewContext } from '@/context/review-context';
 import useMeetingID from '@/hooks/use-meeting-id';
 import useReviewData from '@/hooks/use-review-data';
-import { cn, sigmoid } from '@/lib/utils';
+import { calculateAwarenessScore, cn, sigmoid } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import { Toggle } from '../ui/toggle';
 import BoundingBox from './bounding-box';
@@ -107,23 +107,7 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
     const { Pitch, Yaw } = eyeDirection;
     const { Confidence } = eyesOpen;
 
-    // Calculate awareness based on pitch and yaw
-    const awarenessPitch = sigmoid(
-      Math.abs(Pitch) - PITCH_THRESHOLD,
-      SIGMOID_STEEPNESS,
-    );
-    const awarenessYaw = sigmoid(
-      Math.abs(Yaw) - YAW_THRESHOLD,
-      SIGMOID_STEEPNESS,
-    );
-
-    // Blend the awareness values, with weights for eye direction and eyes open
-    const awarenessMetric =
-      (((awarenessPitch + awarenessYaw) / 2) * EYE_DIRECTION_WEIGHT +
-        Confidence * EYES_OPEN_WEIGHT) /
-      (EYE_DIRECTION_WEIGHT + EYES_OPEN_WEIGHT);
-
-    return awarenessMetric;
+    return calculateAwarenessScore(Pitch, Yaw, Confidence);
   }, [eyesOpen, eyeDirection]);
 
   return (
