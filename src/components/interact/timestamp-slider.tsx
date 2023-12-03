@@ -66,7 +66,7 @@ export default function TimestampSlider({
         ))}
       </div>
       <p
-        className="absolute -bottom-8 transform -translate-x-1/2 font-light text-xs text-white"
+        className="absolute pointer-events-none -bottom-8 transform -translate-x-1/2 font-light text-xs text-white"
         style={{
           left: `${normalizeValue(sliderValue) * 100}%`,
         }}

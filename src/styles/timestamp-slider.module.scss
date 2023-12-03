@@ -18,6 +18,7 @@ $thumb-color: rgb(34, 178, 245);
     height: 12px;
     background: $slider-color;
     border-radius: 0px;
+    user-select: none;
   }
 
   // Define the thumb style

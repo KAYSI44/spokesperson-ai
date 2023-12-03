@@ -5,6 +5,53 @@ import {
   ToxicContentType,
 } from '@aws-sdk/client-comprehend';
 
+export interface BoundingBox {
+  Height: number;
+  Left: number;
+  Top: number;
+  Width: number;
+}
+
+interface FaceAnalysis {
+  BoundingBox: BoundingBox;
+  Confidence: number;
+  Emotions: {
+    Confidence: number;
+    Type: string;
+  }[];
+  EyeDirection: {
+    Confidence: number;
+    Pitch: number;
+    Yaw: number;
+  };
+  EyesOpen: {
+    Confidence: number;
+    Value: boolean;
+  };
+  Gender: {
+    Confidence: number;
+    Value: string;
+  };
+  Landmarks: {
+    Type: string;
+    X: number;
+    Y: number;
+  }[];
+  Pose: {
+    Pitch: number;
+    Roll: number;
+    Yaw: number;
+  };
+  Quality: {
+    Brightness: number;
+    Sharpness: number;
+  };
+  Smile: {
+    Confidence: number;
+    Value: boolean;
+  };
+}
+
 interface ErrorOutput {
   error?: {
     message: string;
@@ -18,7 +65,7 @@ export type SaveFrameOutput = {
 } & ErrorOutput;
 
 export type FaceAnalysisOutput = {
-  result?: any;
+  result?: FaceAnalysis[];
 } & ErrorOutput;
 
 export type TranscribeSpeechOutput = {

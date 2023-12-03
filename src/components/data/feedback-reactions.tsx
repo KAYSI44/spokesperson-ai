@@ -81,17 +81,17 @@ export default function FeedbackReactions({
   //   };
   // }, []);
 
-  if (!events || !events.length) return null;
-
   return (
     <div className={cn('p-6 rounded-lg bg-muted/50', className)}>
       <div className="mb-4 flex justify-between items-center">
         <h3 className="font-bold text-lg text-muted-foreground/80">
           Sentiment
         </h3>
-        <p className="font-bold text-sm">
-          {events[0].sentiment?.sentiment ?? 'NIL'}
-        </p>
+        {events && (
+          <p className="font-bold text-sm">
+            {events[0].sentiment?.sentiment ?? 'NIL'}
+          </p>
+        )}
       </div>
 
       <div className={styles['feedback']}>
