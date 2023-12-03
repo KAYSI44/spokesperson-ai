@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useEffect, useState } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import useMeetingID from '@/hooks/use-meeting-id';
 import useReviewData from '@/hooks/use-review-data';
 import { Chart as ChartJS, type ChartData, registerables } from 'chart.js';
@@ -10,7 +10,7 @@ import { createGradient } from '@/lib/charts';
 
 ChartJS.register(...registerables);
 
-export default function SmileChart() {
+export default function QualityChart() {
   const chartRef = useRef<ChartJS>(null);
   const [chartData, setChartData] = useState<ChartData<'line'>>({
     datasets: [],
@@ -19,7 +19,7 @@ export default function SmileChart() {
   const { meetingID } = useMeetingID();
   const { events } = useReviewData(meetingID);
 
-  const smileTimeSeries = useMemo(() => {
+  const qualityTimeSeries = useMemo(() => {
     if (!events) return undefined;
 
     const filteredEvents = events
@@ -27,7 +27,7 @@ export default function SmileChart() {
         (event) =>
           event.faceAnalysis?.map((face) => ({
             time: event.timestamp,
-            value: face.Smile.Confidence,
+            value: face.Quality.Sharpness,
           }))?.[0],
       )
       .filter((event) => !!event) as { time: number; value: number }[];
@@ -40,41 +40,39 @@ export default function SmileChart() {
   useEffect(() => {
     const chart = chartRef.current;
 
-    if (!chart || !smileTimeSeries) {
+    if (!chart || !qualityTimeSeries) {
       return;
     }
 
     setChartData({
-      labels: smileTimeSeries.map((field) => secondsToMMSS(field.time)),
+      labels: qualityTimeSeries.map((field) => secondsToMMSS(field.time)),
       datasets: [
         {
-          label: 'Eyes Open',
+          label: 'Quality',
           borderColor: createGradient(chart.ctx, chart.chartArea),
           backgroundColor: 'transparent',
           borderWidth: 2,
           pointRadius: 4,
-          data: smileTimeSeries.map((field) => field.value / 100),
+          data: qualityTimeSeries.map((field) => field.value / 100),
         },
       ],
     });
-  }, [smileTimeSeries]);
+  }, [qualityTimeSeries]);
 
   return (
     <div className="w-full aspect-video bg-muted/50 p-6 rounded-xl flex flex-col">
       <div className="mb-4 flex justify-between items-center shrink-0 grow-0">
         <h3 className="font-bold text-lg text-muted-foreground/80">
-          Smile Chart
+          Quality Chart
         </h3>
       </div>
 
       <Chart
-        type="line"
-        options={{
-          devicePixelRatio: 4,
-        }}
+        options={{ devicePixelRatio: 4 }}
         className="grow shrink-0 w-full"
         data={chartData}
         ref={chartRef}
+        type="line"
       />
     </div>
   );

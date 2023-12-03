@@ -81,6 +81,28 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
     return landmarks?.[0];
   }, [currentTimestamp, events]);
 
+  const faceSmile = useMemo(() => {
+    const currentEvent = events?.find(
+      (event) => event.timestamp === currentTimestamp,
+    );
+    const scores = currentEvent?.faceAnalysis?.map(
+      (face) => face.Smile.Confidence,
+    );
+
+    return scores?.[0];
+  }, [currentTimestamp, events]);
+
+  const imageQuality = useMemo(() => {
+    const currentEvent = events?.find(
+      (event) => event.timestamp === currentTimestamp,
+    );
+    const scores = currentEvent?.faceAnalysis?.map(
+      (face) => face.Quality.Sharpness,
+    );
+
+    return scores?.[0];
+  }, [currentTimestamp, events]);
+
   const eyeDirection = useMemo(() => {
     const currentEvent = events?.find(
       (event) => event.timestamp === currentTimestamp,
@@ -178,22 +200,40 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
                 eyeDirection={eyeDirection}
               />
             )}
-            <p className="text-xs text-blue-500 font-semibold ml-4">
-              Eyes Open:{' '}
-              <span>
-                {eyesOpen !== undefined
-                  ? `${Math.round(eyesOpen.Confidence * 100) / 100}%`
-                  : 'NIL'}
-              </span>
-            </p>
-            <p className="text-xs mt-2 text-blue-500 font-semibold ml-4">
-              Awareness Score:{' '}
-              <span>
-                {awarenessScore !== undefined
-                  ? `${Math.round(awarenessScore * 100) / 100}%`
-                  : 'NIL'}
-              </span>
-            </p>
+            <div className="ml-4 space-y-1">
+              <p className="text-xs text-blue-500 font-semibold">
+                Smile:{' '}
+                <span>
+                  {faceSmile !== undefined
+                    ? `${Math.round(faceSmile * 100) / 100}%`
+                    : 'NIL'}
+                </span>
+              </p>
+              <p className="text-xs text-blue-500 font-semibold">
+                Quality:{' '}
+                <span>
+                  {imageQuality !== undefined
+                    ? `${Math.round(imageQuality * 100) / 100}%`
+                    : 'NIL'}
+                </span>
+              </p>
+              <p className="text-xs text-blue-500 font-semibold">
+                Eyes Open:{' '}
+                <span>
+                  {eyesOpen !== undefined
+                    ? `${Math.round(eyesOpen.Confidence * 100) / 100}%`
+                    : 'NIL'}
+                </span>
+              </p>
+              <p className="text-xs text-blue-500 font-semibold">
+                Awareness Score:{' '}
+                <span>
+                  {awarenessScore !== undefined
+                    ? `${Math.round(awarenessScore * 100) / 100}%`
+                    : 'NIL'}
+                </span>
+              </p>
+            </div>
           </div>
         )}
       </div>

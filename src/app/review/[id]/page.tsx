@@ -1,4 +1,5 @@
 import AwarenessChart from '@/components/charts/awareness-chart';
+import QualityChart from '@/components/charts/quality-chart';
 import SmileChart from '@/components/charts/smile-chart';
 import CurrentFrame from '@/components/data/current-frame';
 import CurrentTranscript from '@/components/data/current-transcript';
@@ -21,6 +22,7 @@ export default function ReviewPage() {
         <TabsContent className="w-full" value="overall">
           <div className="space-y-2">
             <AwarenessChart />
+            <QualityChart />
             <SmileChart />
           </div>
         </TabsContent>
