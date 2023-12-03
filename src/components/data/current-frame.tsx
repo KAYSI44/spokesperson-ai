@@ -11,6 +11,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import { Toggle } from '../ui/toggle';
 import BoundingBox from './bounding-box';
 import FaceLandmarks from './face-landmarks';
+import EyeDirection from './eye-direction';
 
 interface CurrentFrameProps {
   className?: string;
@@ -50,6 +51,17 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
     const landmarks = currentEvent?.faceAnalysis?.map((face) => face.Landmarks);
 
     return landmarks?.[0];
+  }, [currentTimestamp, events]);
+
+  const eyeDirection = useMemo(() => {
+    const currentEvent = events?.find(
+      (event) => event.timestamp === currentTimestamp,
+    );
+    const directions = currentEvent?.faceAnalysis?.map(
+      (face) => face.EyeDirection,
+    );
+
+    return directions?.[0];
   }, [currentTimestamp, events]);
 
   return (
@@ -106,6 +118,8 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
             {faceLandmarks && <FaceLandmarks landmarks={faceLandmarks} />}
           </div>
         )}
+
+        {eyeDirection && <EyeDirection eyeDirection={eyeDirection} />}
       </div>
     </div>
   );

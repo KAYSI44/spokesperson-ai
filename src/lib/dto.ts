@@ -23,6 +23,12 @@ export interface FaceLandmark {
   Y: number;
 }
 
+export interface EyeDirection {
+  Confidence: number;
+  Pitch: number;
+  Yaw: number;
+}
+
 interface FaceAnalysis {
   BoundingBox: BoundingBox;
   Confidence: number;
@@ -30,11 +36,7 @@ interface FaceAnalysis {
     Confidence: number;
     Type: EmotionName;
   }[];
-  EyeDirection: {
-    Confidence: number;
-    Pitch: number;
-    Yaw: number;
-  };
+  EyeDirection: EyeDirection;
   EyesOpen: {
     Confidence: number;
     Value: boolean;
