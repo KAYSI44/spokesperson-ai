@@ -87,7 +87,7 @@ export default function FeedbackReactions({
         <h3 className="font-bold text-lg text-muted-foreground/80">
           Sentiment
         </h3>
-        {events && (
+        {events && events.length && (
           <p className="font-bold text-sm">
             {events[0].sentiment?.sentiment ?? 'NIL'}
           </p>

@@ -17,7 +17,6 @@ export default function RoomContext({ children }: RoomContextProps) {
       token={accessToken}
     >
       {children}
-      <RoomAudioRenderer />
     </LiveKitRoom>
   );
 }

@@ -2542,6 +2542,8 @@ function MediaStreamRecorder(mediaStream, config) {
 
     if (mediaRecorder.state === 'recording') {
       mediaRecorder.stop();
+    } else {
+      throw 'Failed to stop recording';
     }
 
     if (typeof config.timeSlice === 'number') {
@@ -6165,7 +6167,7 @@ function RecordRTCPromisesHandler(mediaStream, options) {
       try {
         self.recordRTC.stopRecording(function (url) {
           self.blob = self.recordRTC.getBlob();
-          callback(self.blob)
+          callback(self.blob);
 
           if (!self.blob || !self.blob.size) {
             reject('Empty blob.', self.blob);
