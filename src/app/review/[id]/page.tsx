@@ -3,6 +3,7 @@ import OverallKeyPhrases from '@/components/charts/overall-key-phrases';
 import QualityChart from '@/components/charts/quality-chart';
 import SmileChart from '@/components/charts/smile-chart';
 import ToxicityChart from '@/components/charts/toxicity-chart';
+import WordFrequency from '@/components/charts/word-frequency';
 import CurrentEventJSON from '@/components/data/current-event-json';
 import CurrentFrame from '@/components/data/current-frame';
 import CurrentTranscript from '@/components/data/current-transcript';
@@ -68,6 +69,7 @@ export default function ReviewPage() {
         </TabsContent>
         <TabsContent value="engagement" className="grow-0 shrink-0 w-full">
           <WPMStats />
+          <WordFrequency className="mt-2" />
         </TabsContent>
       </Tabs>
     </ReviewProvider>

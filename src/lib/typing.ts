@@ -47,3 +47,9 @@ export function countOccurences(phraseList: string[]): PhraseCount {
 
   return phraseCount;
 }
+
+export function transformMapToArray(
+  map: Map<string, number>,
+): { text: string; value: number }[] {
+  return Array.from(map.entries()).map(([text, value]) => ({ text, value }));
+}
