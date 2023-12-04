@@ -6,6 +6,7 @@ import ThemeProvider from '@/components/wrappers/theme-provider';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import AppBar from '@/components/brand/app-bar';
+import LoadingProvider from '@/components/wrappers/loading-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,7 +31,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <TooltipProvider>{children}</TooltipProvider>
+          <TooltipProvider>
+            <LoadingProvider>{children}</LoadingProvider>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>
