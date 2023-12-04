@@ -14,6 +14,7 @@ import QuestionsAsked from '@/components/data/questions-asked';
 import SuggestionsList from '@/components/data/suggestions-list';
 import TopicsDiscussed from '@/components/data/topics-discussed';
 import ToxicityIndicator from '@/components/data/toxicity-indicator';
+import TranscriptList from '@/components/data/transcript-list';
 import TimestampSlider from '@/components/interact/timestamp-slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ReviewProvider from '@/context/review-context';
@@ -29,6 +30,8 @@ export default function ReviewPage() {
           <TabsTrigger value="overall">Overall</TabsTrigger>
           <TabsTrigger value="detailed">Detailed</TabsTrigger>
           <TabsTrigger value="report">AI Report</TabsTrigger>
+          <TabsTrigger value="engagement">Engagement</TabsTrigger>
+          <TabsTrigger value="transcript">Transcript</TabsTrigger>
         </TabsList>
         <TabsContent className="w-full" value="overall">
           <div className="space-y-2">
@@ -56,6 +59,9 @@ export default function ReviewPage() {
           <OverallSentiment className="mt-2" />
           <TopicsDiscussed className="mt-2" />
           <QuestionsAsked className="mt-2" />
+        </TabsContent>
+        <TabsContent value="transcript" className="grow-0 shrink-0 w-full">
+          <TranscriptList />
         </TabsContent>
       </Tabs>
     </ReviewProvider>
