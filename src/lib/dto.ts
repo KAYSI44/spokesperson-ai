@@ -128,3 +128,26 @@ export type ReviewOutput = {
     events: AnalysisEvent[];
   };
 } & ErrorOutput;
+
+export type OverallReportOutput = {
+  result?: {
+    mostDiscussedTopic: {
+      topic: string;
+      description: string;
+    };
+    overallSentiment: {
+      sentiment: SentimentType;
+      description: string;
+    };
+    topicsDiscussed: {
+      topic: string;
+      sentiment: SentimentType;
+    }[];
+    questionsAsked: string[];
+    suggestions: string[];
+  };
+} & ErrorOutput;
+
+export interface EndMeetingEvent {
+  transcripts: string[];
+}
