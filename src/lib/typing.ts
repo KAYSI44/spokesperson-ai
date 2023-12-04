@@ -24,3 +24,26 @@ export function mergePiiEntitiesByType(objects: PiiEntity[]) {
 
   return Object.values(mergedObjects);
 }
+
+type PhraseCount = Record<string, number>;
+export function countOccurences(phraseList: string[]): PhraseCount {
+  const phraseCount: PhraseCount = {};
+
+  for (const phrase of phraseList) {
+    const existingPhrases = Object.keys(phraseCount);
+
+    // Check if the current phrase intersects with any of the existing phrases
+    const intersectingPhrase = existingPhrases.find((existingPhrase) =>
+      existingPhrase.includes(phrase),
+    );
+
+    // if there is an intersection, merge to the existing phrase
+    if (intersectingPhrase) {
+      phraseCount[intersectingPhrase] += 1;
+    } else {
+      phraseCount[phrase] = (phraseCount[phrase] || 0) + 1;
+    }
+  }
+
+  return phraseCount;
+}

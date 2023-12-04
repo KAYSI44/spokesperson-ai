@@ -1,4 +1,5 @@
 import AwarenessChart from '@/components/charts/awareness-chart';
+import OverallKeyPhrases from '@/components/charts/overall-key-phrases';
 import QualityChart from '@/components/charts/quality-chart';
 import SmileChart from '@/components/charts/smile-chart';
 import ToxicityChart from '@/components/charts/toxicity-chart';
@@ -30,6 +31,7 @@ export default function ReviewPage() {
             <QualityChart />
             <SmileChart />
             <OverallPii />
+            <OverallKeyPhrases />
           </div>
         </TabsContent>
         <TabsContent value="detailed" className="grow-0 shrink-0 w-full">
