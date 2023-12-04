@@ -3,6 +3,8 @@
 import useMeetingID from '@/hooks/use-meeting-id';
 import useReviewData from '@/hooks/use-review-data';
 import { secondsToMMSS } from '@/lib/utils';
+import { Button } from '../ui/button';
+import { DatabaseIcon } from 'lucide-react';
 
 export default function TranscriptList() {
   const { meetingID } = useMeetingID();
@@ -19,6 +21,10 @@ export default function TranscriptList() {
 
   return (
     <div>
+      <Button variant="default" className="mb-4">
+        <DatabaseIcon className="w-4 h-4 mr-2 mb-0.5" />
+        <span>Export to CSV</span>
+      </Button>
       <div className="grid grid-cols-[4rem_auto] grid-flow-row gap-y-4">
         {transcripts.map(({ time }, index) => (
           <p
