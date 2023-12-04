@@ -21,15 +21,15 @@ export default function MeetingPage() {
             <div className="grid grid-cols-2 grid-rows-1 gap-2 min-h-[80vh]">
               <StreamPlayer
                 isInterviewerScreen
-                analyticsIntervalMs={7500}
+                analyticsIntervalMs={4500}
                 className="col-start-1 col-end-2 row-span-1"
-                videoId="QoBSJukQL8sTOj7ajvvvYlNF1spSbjMFtXt9AFI1Lo00"
-                playbackId="7Xoqe3ndrAqgNXEx1f39RQ7Jzv02gkoRwW5K2nHlzP01U"
+                videoId="DWUBmZEhSfKbfbNJe00EGja22bkM1kt00zcHGYjcRzIHQ"
+                playbackId="fY9Kvk9oNthmsnYXbkICJzYaMfRvlE0001HhTyu4mYGdY"
               />
               <CamPlayer
                 className="col-start-2 col-end-3 row-span-1"
-                videoId="QoBSJukQL8sTOj7ajvvvYlNF1spSbjMFtXt9AFI1Lo00"
-                playbackId="7Xoqe3ndrAqgNXEx1f39RQ7Jzv02gkoRwW5K2nHlzP01U"
+                videoId="MSN4xmQ401xkgUBLODFcX1JyvK027YtleU3ar600o2TcMk"
+                playbackId="m4RtglXP6uJCcXxMhBTTu8Is3LInbSK4UAILWhdsaVQ"
               />
             </div>
             <MeetingControls />
