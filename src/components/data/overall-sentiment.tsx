@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect, useContext } from 'react';
 import { cn } from '@/lib/utils';
-import styles from '@/styles/feedback-reactions.module.scss';
-import useReviewData from '@/hooks/use-review-data';
 import useMeetingID from '@/hooks/use-meeting-id';
-import { ReviewContext } from '@/context/review-context';
+import useReportData from '@/hooks/use-report-data';
+import styles from '@/styles/feedback-reactions.module.scss';
+import { useEffect, useState } from 'react';
 
 enum Reaction {
   ANGRY = 'angry',
@@ -15,31 +14,20 @@ enum Reaction {
   HAPPY = 'happy',
 }
 
-interface FeedbackReactionsProps {
-  className?: string;
-}
-
-export default function FeedbackReactions({
+export default function OverallSentiment({
   className,
-}: FeedbackReactionsProps) {
-  // const cycleIntervalRef = useRef<NodeJS.Timeout>();
+}: {
+  className?: string;
+}) {
+  const { meetingID } = useMeetingID();
+  const { report } = useReportData(meetingID);
 
-  const { currentTimestamp } = useContext(ReviewContext);
   const [currentReaction, setReaction] = useState<Reaction>();
 
-  const { meetingID } = useMeetingID();
-  const { events } = useReviewData(meetingID);
-
   useEffect(() => {
-    if (!events || !events.length) return;
+    if (!report || !report.overallSentiment) return;
 
-    const currentEvent = events.find(
-      (event) => event?.timestamp === currentTimestamp,
-    );
-
-    if (!currentEvent) return;
-
-    const sentiment = currentEvent.sentiment?.sentiment;
+    const sentiment = report.overallSentiment.sentiment;
     if (!sentiment) return;
 
     switch (sentiment) {
@@ -56,38 +44,21 @@ export default function FeedbackReactions({
         setReaction(Reaction.ANGRY);
         break;
     }
-  }, [events, currentTimestamp]);
-
-  // useEffect(() => {
-  //   if (cycleIntervalRef.current !== undefined) {
-  //     clearInterval(cycleIntervalRef.current);
-  //     cycleIntervalRef.current = undefined;
-  //   }
-
-  //   cycleIntervalRef.current = setInterval(() => {
-  //     const reactions = [
-  //       Reaction.ANGRY,
-  //       Reaction.SAD,
-  //       Reaction.OK,
-  //       Reaction.GOOD,
-  //       Reaction.HAPPY,
-  //     ];
-  //     setReaction(sample(reactions) as Reaction);
-  //   }, 2000);
-
-  //   return () => {
-  //     clearInterval(cycleIntervalRef.current);
-  //   };
-  // }, []);
+  }, [report]);
 
   return (
-    <div className={cn('p-6 rounded-lg bg-muted/50', className)}>
+    <div
+      className={cn('p-6 rounded-lg bg-muted/50 overflow-hidden', className)}
+    >
       <div className="mb-4 flex justify-between items-center">
         <h3 className="font-bold text-lg text-muted-foreground/80">
-          Sentiment
+          Overall Sentiment
         </h3>
-        {events && events.length && (
-          <p className="font-bold text-sm uppercase">{currentReaction ?? 'NIL'}</p>
+
+        {report?.overallSentiment && (
+          <p className="font-bold text-sm uppercase">
+            {report.overallSentiment.sentiment}
+          </p>
         )}
       </div>
 
@@ -193,6 +164,8 @@ export default function FeedbackReactions({
           <path d="M1,5.5 C3.66666667,2.5 6.33333333,1 9,1 C11.6666667,1 14.3333333,2.5 17,5.5"></path>
         </symbol>
       </svg>
+
+      {report?.overallSentiment && <p className="mt-4">{report.overallSentiment.description}</p>}
     </div>
   );
 }

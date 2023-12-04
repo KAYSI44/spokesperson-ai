@@ -6,9 +6,13 @@ import ToxicityChart from '@/components/charts/toxicity-chart';
 import CurrentFrame from '@/components/data/current-frame';
 import CurrentTranscript from '@/components/data/current-transcript';
 import FeedbackReactions from '@/components/data/feedback-reactions';
+import MostDiscussedTopic from '@/components/data/most-discussed-topic';
 import OverallPii from '@/components/data/overall-pii';
+import OverallSentiment from '@/components/data/overall-sentiment';
 import PiiList from '@/components/data/pii-list';
+import QuestionsAsked from '@/components/data/questions-asked';
 import SuggestionsList from '@/components/data/suggestions-list';
+import TopicsDiscussed from '@/components/data/topics-discussed';
 import ToxicityIndicator from '@/components/data/toxicity-indicator';
 import TimestampSlider from '@/components/interact/timestamp-slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -24,7 +28,7 @@ export default function ReviewPage() {
         <TabsList className="my-1">
           <TabsTrigger value="overall">Overall</TabsTrigger>
           <TabsTrigger value="detailed">Detailed</TabsTrigger>
-          <TabsTrigger value="report">Report</TabsTrigger>
+          <TabsTrigger value="report">AI Report</TabsTrigger>
         </TabsList>
         <TabsContent className="w-full" value="overall">
           <div className="space-y-2">
@@ -46,11 +50,12 @@ export default function ReviewPage() {
           <ToxicityIndicator className="mt-2" />
           <PiiList className="mt-2" />
         </TabsContent>
-        <TabsContent
-          value="report"
-          className="grow-0 shrink-0 w-full"
-        >
+        <TabsContent value="report" className="grow-0 shrink-0 w-full">
           <SuggestionsList />
+          <MostDiscussedTopic className="mt-2" />
+          <OverallSentiment className="mt-2" />
+          <TopicsDiscussed className="mt-2" />
+          <QuestionsAsked className="mt-2" />
         </TabsContent>
       </Tabs>
     </ReviewProvider>
