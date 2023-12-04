@@ -5,6 +5,7 @@ import ToxicityChart from '@/components/charts/toxicity-chart';
 import CurrentFrame from '@/components/data/current-frame';
 import CurrentTranscript from '@/components/data/current-transcript';
 import FeedbackReactions from '@/components/data/feedback-reactions';
+import OverallPii from '@/components/data/overall-pii';
 import PiiList from '@/components/data/pii-list';
 import ToxicityIndicator from '@/components/data/toxicity-indicator';
 import TimestampSlider from '@/components/interact/timestamp-slider';
@@ -28,6 +29,7 @@ export default function ReviewPage() {
             <ToxicityChart />
             <QualityChart />
             <SmileChart />
+            <OverallPii />
           </div>
         </TabsContent>
         <TabsContent value="detailed" className="grow-0 shrink-0 w-full">

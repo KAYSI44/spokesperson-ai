@@ -9,8 +9,6 @@ import { calculateAwarenessScore, secondsToMMSS } from '@/lib/utils';
 
 ChartJS.register(...registerables);
 
-interface AwarenessChartProps {}
-
 export default function AwarenessChart() {
   const { meetingID } = useMeetingID();
   const { events } = useReviewData(meetingID);
