@@ -40,6 +40,7 @@
     "lodash": "^4.17.21",
     "lorem-ipsum": "^2.0.8",
     "lucide-react": "^0.293.0",
+    "moment": "^2.29.4",
     "next": "14.0.1",
     "next-themes": "^0.2.1",
     "react": "^18",
