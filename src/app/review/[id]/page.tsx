@@ -1,4 +1,5 @@
 import AwarenessChart from '@/components/charts/awareness-chart';
+import ConversationTime from '@/components/charts/conversation-time';
 import OverallKeyPhrases from '@/components/charts/overall-key-phrases';
 import QualityChart from '@/components/charts/quality-chart';
 import SmileChart from '@/components/charts/smile-chart';
@@ -72,6 +73,7 @@ export default function ReviewPage() {
           <WPMStats />
           <WordFrequency className="mt-2" />
           <TotalQuestionsAsked className="mt-2" />
+          <ConversationTime className="mt-2" />
         </TabsContent>
       </Tabs>
     </ReviewProvider>

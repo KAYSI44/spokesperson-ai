@@ -22,9 +22,20 @@ export function calculateWordsPerMinute(
 
 export function calculateTotalConversationTime(
   conversation: ConversationItem[],
+  silenceThreshold: number,
 ): number {
-  const totalTimeSeconds = conversation[conversation.length - 1].timestamp;
-  return totalTimeSeconds;
+  let totalTalkingTime = 0;
+
+  for (let i = 1; i < conversation.length; i++) {
+    const timeGap = conversation[i].timestamp - conversation[i - 1].timestamp;
+
+    // If the time gap is below the silence threshold, consider it as talking time
+    if (timeGap <= silenceThreshold) {
+      totalTalkingTime += timeGap;
+    }
+  }
+
+  return totalTalkingTime;
 }
 
 export function calculateWordFrequency(
