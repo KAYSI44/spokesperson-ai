@@ -1,3 +1,4 @@
+import GuestJoinsEvent from '@/components/analytics/guest-joins-event';
 import AnalyticsToggle from '@/components/configure/analytics-toggle';
 import MeetingControls from '@/components/configure/meeting-controls';
 import AnalysisEvents from '@/components/events/analysis-events';
@@ -32,6 +33,7 @@ export default function MeetingPage() {
               />
             </div>
             <MeetingControls />
+            <GuestJoinsEvent />
           </div>
         </main>
       </RoomContext>
