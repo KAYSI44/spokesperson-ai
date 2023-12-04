@@ -5,6 +5,7 @@ import ToxicityChart from '@/components/charts/toxicity-chart';
 import CurrentFrame from '@/components/data/current-frame';
 import CurrentTranscript from '@/components/data/current-transcript';
 import FeedbackReactions from '@/components/data/feedback-reactions';
+import PiiList from '@/components/data/pii-list';
 import ToxicityIndicator from '@/components/data/toxicity-indicator';
 import TimestampSlider from '@/components/interact/timestamp-slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -15,9 +16,9 @@ export default function ReviewPage() {
     <ReviewProvider>
       <Tabs
         defaultValue="overall"
-        className="xl:mx-auto mx-4 max-w-4xl flex items-center justify-center gap-4 flex-col xl:pt-24 pt-14 pb-8"
+        className="xl:mx-auto mx-4 max-w-4xl flex items-start justify-start gap-4 flex-col xl:mt-24 mt-8 pb-8"
       >
-        <TabsList className="absolute top-0 left-0 m-4 xl:m-8">
+        <TabsList className="my-1">
           <TabsTrigger value="overall">Overall</TabsTrigger>
           <TabsTrigger value="detailed">Detailed</TabsTrigger>
         </TabsList>
@@ -29,7 +30,7 @@ export default function ReviewPage() {
             <SmileChart />
           </div>
         </TabsContent>
-        <TabsContent value="detailed">
+        <TabsContent value="detailed" className="grow-0 shrink-0 w-full">
           <CurrentFrame className="w-full h-auto aspect-video" />
           <TimestampSlider className="w-full mb-12 mt-4" />
           <div className="grid grid-cols-[3fr_1fr] grid-rows-1 gap-2">
@@ -37,6 +38,7 @@ export default function ReviewPage() {
             <FeedbackReactions className="col-start-2 col-end-3 row-start-1 row-end-2" />
           </div>
           <ToxicityIndicator className="mt-2" />
+          <PiiList className="mt-2" />
         </TabsContent>
       </Tabs>
     </ReviewProvider>

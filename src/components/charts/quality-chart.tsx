@@ -7,6 +7,7 @@ import { Chart as ChartJS, type ChartData, registerables } from 'chart.js';
 import { Chart } from 'react-chartjs-2';
 import { secondsToMMSS } from '@/lib/utils';
 import { createGradient } from '@/lib/charts';
+import { isDefined } from '@/lib/typing';
 
 ChartJS.register(...registerables);
 
@@ -30,11 +31,9 @@ export default function QualityChart() {
             value: face.Quality.Sharpness,
           }))?.[0],
       )
-      .filter((event) => !!event) as { time: number; value: number }[];
+      .filter(isDefined);
 
-    return filteredEvents.sort((a, b) =>
-      a?.time > b?.time ? 1 : a?.time < b?.time ? -1 : 0,
-    );
+    return filteredEvents.sort((a, b) => a.time - b.time);
   }, [events]);
 
   useEffect(() => {

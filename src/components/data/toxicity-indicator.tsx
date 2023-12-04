@@ -27,8 +27,6 @@ export default function ToxicityIndicator({
     );
     const scores = currentEvent?.toxicity;
 
-    console.log(scores);
-
     return scores?.[0];
   }, [currentTimestamp, events]);
 
