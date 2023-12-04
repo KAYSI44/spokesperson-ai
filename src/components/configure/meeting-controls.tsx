@@ -27,10 +27,10 @@ export default function MeetingControls() {
       .map((event) => event.transcription?.text)
       .filter(isDefined);
 
-    await axios<AnalyticsOutput>({
-      url: `/api/analytics/${meetingID}`,
+    axios({
+      url: `/api/overall/${meetingID}`,
       method: 'POST',
-      data: { transcripts } as EndMeetingEvent,
+      data: { transcripts },
     });
 
     disconnect();

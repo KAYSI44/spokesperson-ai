@@ -8,6 +8,7 @@ import { useState, useEffect, useContext, useMemo } from 'react';
 import useReviewData from '@/hooks/use-review-data';
 import useMeetingID from '@/hooks/use-meeting-id';
 import { TOXICITY_THRESHOLD } from '@/lib/constants';
+import { isDefined } from '@/lib/typing';
 
 interface TimestampSliderProps {
   sliderPadding?: number;
@@ -22,7 +23,10 @@ export default function TimestampSlider({
   const { events } = useReviewData(meetingID);
 
   const timestamps =
-    events?.map((event) => event.timestamp).sort((a, b) => a - b) ?? [];
+    events
+      ?.map((event) => event.timestamp)
+      .filter(isDefined)
+      .sort((a, b) => a - b) ?? [];
 
   const toxicityTimeSeries = useMemo(() => {
     if (!events) return undefined;
@@ -35,11 +39,9 @@ export default function TimestampSlider({
             value: toxicity.toxicity,
           }))?.[0],
       )
-      .filter((event) => !!event) as { time: number; value: number }[];
+      .filter(isDefined);
 
-    return filteredEvents.sort((a, b) =>
-      a?.time > b?.time ? 1 : a?.time < b?.time ? -1 : 0,
-    );
+    return filteredEvents.sort((a, b) => a.time - b.time);
   }, [events]);
 
   const { currentTimestamp, setCurrentTimestamp } = useContext(ReviewContext);
@@ -59,7 +61,7 @@ export default function TimestampSlider({
     );
 
     setCurrentTimestamp(closestTimestamp);
-  }, [sliderValue]);
+  }, [sliderValue, timestamps]);
 
   return (
     <div className={cn('w-[300px] relative', className)}>

@@ -31,7 +31,7 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
   const { events } = useReviewData(meetingID);
   const { currentTimestamp } = useContext(ReviewContext);
 
-  const frames = events?.map((event) => event.storedFrame?.uri as string);
+  const frames = events?.map((event) => event?.storedFrame?.uri as string);
 
   const currentFrame = useMemo(() => {
     const currentEvent = events?.find(

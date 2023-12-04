@@ -51,7 +51,7 @@ export default function FeedbackReactions({
         setReaction(Reaction.OK);
         break;
       case 'NEUTRAL':
-        setReaction(Reaction.OK);
+        setReaction(Reaction.GOOD);
         break;
       case 'NEGATIVE':
         setReaction(Reaction.ANGRY);
@@ -88,9 +88,7 @@ export default function FeedbackReactions({
           Sentiment
         </h3>
         {events && events.length && (
-          <p className="font-bold text-sm">
-            {events[0].sentiment?.sentiment ?? 'NIL'}
-          </p>
+          <p className="font-bold text-sm uppercase">{currentReaction ?? 'NIL'}</p>
         )}
       </div>
 

@@ -5,10 +5,16 @@ import {
   InvokeModelCommand,
 } from '@aws-sdk/client-bedrock-runtime';
 import { generateReportPrompt } from '@/lib/prompts';
+import { Analytics } from '@segment/analytics-node';
 import { jsonrepair } from 'jsonrepair';
+
+const analytics = new Analytics({
+  writeKey: process.env.SEGMENT_WRITE_KEY as string,
+});
 
 export async function POST(
   request: NextRequest,
+  { params }: { params: { id: string } },
 ): Promise<NextResponse<OverallReportOutput>> {
   try {
     const { transcripts }: { transcripts: string[] } = await request.json();
@@ -43,10 +49,13 @@ export async function POST(
       jsonrepair(result.results[0].outputText),
     ) as OverallReportOutput['result'];
 
-    return NextResponse.json(
-      { result: data },
-      { status: 200 },
-    );
+    analytics.track({
+      userId: params.id, // using meeting id as user id
+      event: 'end-meeting',
+      properties: data,
+    });
+
+    return NextResponse.json({ result: data }, { status: 200 });
   } catch (error) {
     const message = `Error processing transcripts: ${error}`;
     return NextResponse.json({ error: { message } }, { status: 500 });

@@ -149,5 +149,5 @@ export type OverallReportOutput = {
 } & ErrorOutput;
 
 export interface EndMeetingEvent {
-  transcripts: string[];
+  data: OverallReportOutput['result'];
 }
