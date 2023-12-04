@@ -29,7 +29,7 @@ export default function ReviewPage() {
     <ReviewProvider>
       <Tabs
         defaultValue="engagement"
-        className="xl:mx-auto mx-4 max-w-4xl flex items-start justify-start gap-4 flex-col xl:mt-24 mt-8 pb-8"
+        className="xl:mx-auto mx-4 max-w-4xl flex items-start justify-start gap-4 flex-col xl:mt-4 mt-8 pb-8"
       >
         <TabsList className="my-1">
           <TabsTrigger value="overall">Overall</TabsTrigger>

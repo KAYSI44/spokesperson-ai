@@ -5,6 +5,7 @@ import '@/styles/hero-patterns.css';
 import ThemeProvider from '@/components/wrappers/theme-provider';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import AppBar from '@/components/brand/app-bar';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body
         className={cn(inter.className, 'bg-patterns-circuit-board h-screen')}
       >
+        <AppBar />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
