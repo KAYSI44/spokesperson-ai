@@ -3,6 +3,7 @@ import OverallKeyPhrases from '@/components/charts/overall-key-phrases';
 import QualityChart from '@/components/charts/quality-chart';
 import SmileChart from '@/components/charts/smile-chart';
 import ToxicityChart from '@/components/charts/toxicity-chart';
+import CurrentEventJSON from '@/components/data/current-event-json';
 import CurrentFrame from '@/components/data/current-frame';
 import CurrentTranscript from '@/components/data/current-transcript';
 import FeedbackReactions from '@/components/data/feedback-reactions';
@@ -52,6 +53,7 @@ export default function ReviewPage() {
           </div>
           <ToxicityIndicator className="mt-2" />
           <PiiList className="mt-2" />
+          <CurrentEventJSON className="mt-2" />
         </TabsContent>
         <TabsContent value="report" className="grow-0 shrink-0 w-full">
           <SuggestionsList />
