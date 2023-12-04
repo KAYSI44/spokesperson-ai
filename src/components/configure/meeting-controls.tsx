@@ -10,6 +10,7 @@ import useMeetingID from '@/hooks/use-meeting-id';
 import { AnalyticsContext } from '@/context/analytics-context';
 import { isDefined } from '@/lib/typing';
 import { useRouter } from 'next/navigation';
+import ShareMeeting from '../interact/share-meeting';
 
 export default function MeetingControls() {
   const {
@@ -38,7 +39,8 @@ export default function MeetingControls() {
   }
 
   return (
-    <div className="mt-6 flex items-center justify-end">
+    <div className="mt-6 flex items-center justify-between">
+      <ShareMeeting />
       <GlowButton enabled={isInterviewer} onClick={handleEndMeeting}>
         End Meeting
       </GlowButton>
