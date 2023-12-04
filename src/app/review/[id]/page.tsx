@@ -16,6 +16,7 @@ import SuggestionsList from '@/components/data/suggestions-list';
 import TopicsDiscussed from '@/components/data/topics-discussed';
 import ToxicityIndicator from '@/components/data/toxicity-indicator';
 import TranscriptList from '@/components/data/transcript-list';
+import WPMStats from '@/components/data/words-per-minutes';
 import TimestampSlider from '@/components/interact/timestamp-slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ReviewProvider from '@/context/review-context';
@@ -24,7 +25,7 @@ export default function ReviewPage() {
   return (
     <ReviewProvider>
       <Tabs
-        defaultValue="overall"
+        defaultValue="engagement"
         className="xl:mx-auto mx-4 max-w-4xl flex items-start justify-start gap-4 flex-col xl:mt-24 mt-8 pb-8"
       >
         <TabsList className="my-1">
@@ -64,6 +65,9 @@ export default function ReviewPage() {
         </TabsContent>
         <TabsContent value="transcript" className="grow-0 shrink-0 w-full">
           <TranscriptList />
+        </TabsContent>
+        <TabsContent value="engagement" className="grow-0 shrink-0 w-full">
+          <WPMStats />
         </TabsContent>
       </Tabs>
     </ReviewProvider>
