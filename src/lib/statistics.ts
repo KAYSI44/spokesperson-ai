@@ -16,7 +16,7 @@ export function calculateWordsPerMinute(
   );
 
   const totalTimeMinutes =
-    Math.max(conversation[conversation.length - 1].timestamp, 1) / 60;
+    Math.max(conversation[conversation.length - 1]?.timestamp, 1) / 60;
   return totalWords / totalTimeMinutes;
 }
 

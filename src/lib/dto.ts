@@ -119,6 +119,10 @@ export interface AnalyticsInput {
   event: AnalysisEvent;
 }
 
+export interface FlagInput {
+  event: AnalysisEvent;
+}
+
 export type AnalyticsOutput = {
   result?: {};
 } & ErrorOutput;

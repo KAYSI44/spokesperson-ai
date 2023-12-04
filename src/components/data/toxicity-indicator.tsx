@@ -10,6 +10,10 @@ import {
   TOXICITY_MID_THRESHOLD,
   TOXICITY_THRESHOLD,
 } from '@/lib/constants';
+import { Button } from '../ui/button';
+import { FlagIcon } from 'lucide-react';
+import axios from 'axios';
+import { AnalyticsInput, AnalyticsOutput } from '@/lib/dto';
 
 export default function ToxicityIndicator({
   className,
@@ -30,6 +34,20 @@ export default function ToxicityIndicator({
     return scores?.[0];
   }, [currentTimestamp, events]);
 
+  async function handleReportEvent() {
+    const currentEvent = events?.find(
+      (event) => event?.timestamp === currentTimestamp,
+    );
+
+    if (!currentEvent) return;
+
+    await axios<AnalyticsOutput>({
+      url: `/api/analytics/flag/${meetingID}`,
+      method: 'POST',
+      data: { event: currentEvent } as AnalyticsInput,
+    });
+  }
+
   return (
     <div className={cn('p-6 rounded-lg bg-muted/50', className)}>
       <div className="mb-4 flex justify-between items-center">
@@ -39,6 +57,15 @@ export default function ToxicityIndicator({
       {toxicityData ? (
         toxicityData.toxicity > TOXICITY_THRESHOLD ? (
           <div className="space-y-1">
+            <Button
+              variant="destructive"
+              className="mb-4"
+              onClick={handleReportEvent}
+            >
+              <FlagIcon className="w-4 h-4 mr-2 mb-0.5" />
+              <span>Report</span>
+            </Button>
+
             <p
               className={cn(
                 'font-semibold text-xs',
