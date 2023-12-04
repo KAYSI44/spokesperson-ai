@@ -19,7 +19,7 @@ export default function AwarenessChart() {
     const filteredEvents = events
       .map(
         (event) =>
-          event.faceAnalysis?.map((face) => ({
+          event?.faceAnalysis?.map((face) => ({
             time: event.timestamp,
             value: face.EyesOpen.Confidence,
           }))?.[0],
@@ -36,7 +36,7 @@ export default function AwarenessChart() {
 
     const filteredEvents = events
       .map((event) => {
-        const faceAnalysis = event.faceAnalysis?.[0];
+        const faceAnalysis = event?.faceAnalysis?.[0];
 
         if (!faceAnalysis) return undefined;
 

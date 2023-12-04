@@ -24,7 +24,7 @@ export default function TimestampSlider({
 
   const timestamps =
     events
-      ?.map((event) => event.timestamp)
+      ?.map((event) => event?.timestamp)
       .filter(isDefined)
       .sort((a, b) => a - b) ?? [];
 
@@ -34,8 +34,8 @@ export default function TimestampSlider({
     const filteredEvents = events
       .map(
         (event) =>
-          event.toxicity?.map((toxicity) => ({
-            time: event.timestamp,
+          event?.toxicity?.map((toxicity) => ({
+            time: event.timestamp ?? 0,
             value: toxicity.toxicity,
           }))?.[0],
       )

@@ -17,7 +17,7 @@ export default function OverallKeyPhrases() {
     if (!events) return undefined;
 
     const keyPhrases = events
-      .map((event) => event.keyPhrases?.keyPhrases)
+      .map((event) => event?.keyPhrases?.keyPhrases)
       .filter(isDefined)
       .flat();
 

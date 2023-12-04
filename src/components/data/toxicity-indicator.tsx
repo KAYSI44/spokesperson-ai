@@ -23,7 +23,7 @@ export default function ToxicityIndicator({
 
   const toxicityData = useMemo(() => {
     const currentEvent = events?.find(
-      (event) => event.timestamp === currentTimestamp,
+      (event) => event?.timestamp === currentTimestamp,
     );
     const scores = currentEvent?.toxicity;
 

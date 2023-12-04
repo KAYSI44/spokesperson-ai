@@ -26,8 +26,8 @@ export default function SmileChart() {
     const filteredEvents = events
       .map(
         (event) =>
-          event.faceAnalysis?.map((face) => ({
-            time: event.timestamp,
+          event?.faceAnalysis?.map((face) => ({
+            time: event.timestamp ?? 0,
             value: face.Smile.Confidence,
           }))?.[0],
       )

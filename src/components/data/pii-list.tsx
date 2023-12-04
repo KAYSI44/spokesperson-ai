@@ -49,7 +49,7 @@ export default function PiiList({ className }: PiiListProps) {
 
   const pii = useMemo(() => {
     const currentEvent = events?.find(
-      (event) => event.timestamp === currentTimestamp,
+      (event) => event?.timestamp === currentTimestamp,
     );
 
     return currentEvent?.pii?.map((info) => {

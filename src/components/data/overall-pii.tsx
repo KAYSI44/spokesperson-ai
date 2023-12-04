@@ -43,7 +43,7 @@ export default function PiiList() {
 
   const pii = useMemo(() => {
     const piiList = events
-      ?.map((event) => event.pii)
+      ?.map((event) => event?.pii)
       .filter(isDefined)
       .flat();
 

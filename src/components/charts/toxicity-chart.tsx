@@ -25,7 +25,7 @@ export default function ToxicityChart() {
     const filteredEvents = events
       .map(
         (event) =>
-          event.toxicity?.map((toxicity) => ({
+          event?.toxicity?.map((toxicity) => ({
             time: event.timestamp,
             value: toxicity.toxicity,
           }))?.[0],

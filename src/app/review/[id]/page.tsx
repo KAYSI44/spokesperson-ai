@@ -8,6 +8,7 @@ import CurrentTranscript from '@/components/data/current-transcript';
 import FeedbackReactions from '@/components/data/feedback-reactions';
 import OverallPii from '@/components/data/overall-pii';
 import PiiList from '@/components/data/pii-list';
+import SuggestionsList from '@/components/data/suggestions-list';
 import ToxicityIndicator from '@/components/data/toxicity-indicator';
 import TimestampSlider from '@/components/interact/timestamp-slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -23,6 +24,7 @@ export default function ReviewPage() {
         <TabsList className="my-1">
           <TabsTrigger value="overall">Overall</TabsTrigger>
           <TabsTrigger value="detailed">Detailed</TabsTrigger>
+          <TabsTrigger value="report">Report</TabsTrigger>
         </TabsList>
         <TabsContent className="w-full" value="overall">
           <div className="space-y-2">
@@ -43,6 +45,12 @@ export default function ReviewPage() {
           </div>
           <ToxicityIndicator className="mt-2" />
           <PiiList className="mt-2" />
+        </TabsContent>
+        <TabsContent
+          value="report"
+          className="grow-0 shrink-0 w-full"
+        >
+          <SuggestionsList />
         </TabsContent>
       </Tabs>
     </ReviewProvider>

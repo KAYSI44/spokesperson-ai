@@ -35,14 +35,14 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
 
   const currentFrame = useMemo(() => {
     const currentEvent = events?.find(
-      (event) => event.timestamp === currentTimestamp,
+      (event) => event?.timestamp === currentTimestamp,
     );
     return currentEvent?.storedFrame?.uri;
   }, [currentTimestamp, events]);
 
   const faceBoundingBox = useMemo(() => {
     const currentEvent = events?.find(
-      (event) => event.timestamp === currentTimestamp,
+      (event) => event?.timestamp === currentTimestamp,
     );
     const boundingBoxes = currentEvent?.faceAnalysis?.map(
       (face) => face.BoundingBox,
@@ -53,7 +53,7 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
 
   const faceEmotion = useMemo(() => {
     const currentEvent = events?.find(
-      (event) => event.timestamp === currentTimestamp,
+      (event) => event?.timestamp === currentTimestamp,
     );
     const emotions = currentEvent?.faceAnalysis
       ?.map((face) => {
@@ -74,7 +74,7 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
 
   const faceLandmarks = useMemo(() => {
     const currentEvent = events?.find(
-      (event) => event.timestamp === currentTimestamp,
+      (event) => event?.timestamp === currentTimestamp,
     );
     const landmarks = currentEvent?.faceAnalysis?.map((face) => face.Landmarks);
 
@@ -83,7 +83,7 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
 
   const faceSmile = useMemo(() => {
     const currentEvent = events?.find(
-      (event) => event.timestamp === currentTimestamp,
+      (event) => event?.timestamp === currentTimestamp,
     );
     const scores = currentEvent?.faceAnalysis?.map(
       (face) => face.Smile.Confidence,
@@ -94,7 +94,7 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
 
   const imageQuality = useMemo(() => {
     const currentEvent = events?.find(
-      (event) => event.timestamp === currentTimestamp,
+      (event) => event?.timestamp === currentTimestamp,
     );
     const scores = currentEvent?.faceAnalysis?.map(
       (face) => face.Quality.Sharpness,
@@ -105,7 +105,7 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
 
   const eyeDirection = useMemo(() => {
     const currentEvent = events?.find(
-      (event) => event.timestamp === currentTimestamp,
+      (event) => event?.timestamp === currentTimestamp,
     );
     const directions = currentEvent?.faceAnalysis?.map(
       (face) => face.EyeDirection,
@@ -116,7 +116,7 @@ export default function CurrentFrame({ className }: CurrentFrameProps) {
 
   const eyesOpen = useMemo(() => {
     const currentEvent = events?.find(
-      (event) => event.timestamp === currentTimestamp,
+      (event) => event?.timestamp === currentTimestamp,
     );
     const scores = currentEvent?.faceAnalysis?.map((face) => face.EyesOpen);
 

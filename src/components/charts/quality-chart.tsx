@@ -24,10 +24,11 @@ export default function QualityChart() {
     if (!events) return undefined;
 
     const filteredEvents = events
+      .filter(isDefined)
       .map(
         (event) =>
-          event.faceAnalysis?.map((face) => ({
-            time: event.timestamp,
+          event?.faceAnalysis?.map((face) => ({
+            time: event.timestamp ?? 0,
             value: face.Quality.Sharpness,
           }))?.[0],
       )

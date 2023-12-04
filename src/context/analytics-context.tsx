@@ -24,14 +24,14 @@ export const AnalyticsContext = createContext({
 });
 
 export interface AnalysisEvent {
-  timestamp: number;
-  pii: PiiAnalysisOutput['result'];
-  storedFrame: SaveFrameOutput['result'];
-  toxicity: ToxicityAnalysisOutput['result'];
-  faceAnalysis: FaceAnalysisOutput['result'];
-  sentiment: SentimentAnalysisOutput['result'];
-  keyPhrases: KeyPhrasesAnalysisOutput['result'];
-  transcription: TranscribeSpeechOutput['result'];
+  timestamp?: number;
+  pii?: PiiAnalysisOutput['result'];
+  storedFrame?: SaveFrameOutput['result'];
+  toxicity?: ToxicityAnalysisOutput['result'];
+  faceAnalysis?: FaceAnalysisOutput['result'];
+  sentiment?: SentimentAnalysisOutput['result'];
+  keyPhrases?: KeyPhrasesAnalysisOutput['result'];
+  transcription?: TranscribeSpeechOutput['result'];
 }
 
 interface AnalyticsProviderProps {

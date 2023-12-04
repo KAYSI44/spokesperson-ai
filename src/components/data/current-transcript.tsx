@@ -19,14 +19,14 @@ export default function CurrentTranscript({
 
   const currentTranscript = useMemo(() => {
     const currentEvent = events?.find(
-      (event) => event.timestamp === currentTimestamp,
+      (event) => event?.timestamp === currentTimestamp,
     );
     return currentEvent?.transcription?.text;
   }, [currentTimestamp, events]);
 
   const keyPhrases = useMemo(() => {
     const currentEvent = events?.find(
-      (event) => event.timestamp === currentTimestamp,
+      (event) => event?.timestamp === currentTimestamp,
     );
     return currentEvent?.keyPhrases?.keyPhrases;
   }, [currentTimestamp, events]);

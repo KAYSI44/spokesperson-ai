@@ -125,7 +125,7 @@ export type AnalyticsOutput = {
 
 export type ReviewOutput = {
   result?: {
-    events: AnalysisEvent[];
+    events: (AnalysisEvent | undefined)[];
   };
 } & ErrorOutput;
 
