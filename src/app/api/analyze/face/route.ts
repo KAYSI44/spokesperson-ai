@@ -24,7 +24,7 @@ export async function POST(
 
     const { FaceDetails } = await rekognition.detectFaces(detectFaces.input);
 
-    return NextResponse.json({ result: FaceDetails }, { status: 200 });
+    return NextResponse.json({ result: FaceDetails as any }, { status: 200 });
   } catch (error) {
     const message = `Error processing image: ${error}`;
     return NextResponse.json({ error: { message } }, { status: 500 });
