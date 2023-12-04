@@ -15,6 +15,7 @@ import PiiList from '@/components/data/pii-list';
 import QuestionsAsked from '@/components/data/questions-asked';
 import SuggestionsList from '@/components/data/suggestions-list';
 import TopicsDiscussed from '@/components/data/topics-discussed';
+import TotalQuestionsAsked from '@/components/data/total-questions-asked';
 import ToxicityIndicator from '@/components/data/toxicity-indicator';
 import TranscriptList from '@/components/data/transcript-list';
 import WPMStats from '@/components/data/words-per-minutes';
@@ -70,6 +71,7 @@ export default function ReviewPage() {
         <TabsContent value="engagement" className="grow-0 shrink-0 w-full">
           <WPMStats />
           <WordFrequency className="mt-2" />
+          <TotalQuestionsAsked className="mt-2" />
         </TabsContent>
       </Tabs>
     </ReviewProvider>
